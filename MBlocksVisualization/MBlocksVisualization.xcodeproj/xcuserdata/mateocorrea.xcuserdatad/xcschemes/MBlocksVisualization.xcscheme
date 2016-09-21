@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3C30B12E1D9314430005C2B7"
+               BlueprintIdentifier = "3C30B17B1D9327830005C2B7"
                BuildableName = "MBlocksVisualization.app"
                BlueprintName = "MBlocksVisualization"
                ReferencedContainer = "container:MBlocksVisualization.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3C30B1421D9314430005C2B7"
+               BlueprintIdentifier = "3C30B18F1D9327840005C2B7"
                BuildableName = "MBlocksVisualizationTests.xctest"
                BlueprintName = "MBlocksVisualizationTests"
                ReferencedContainer = "container:MBlocksVisualization.xcodeproj">
@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3C30B14D1D9314430005C2B7"
+               BlueprintIdentifier = "3C30B19A1D9327840005C2B7"
                BuildableName = "MBlocksVisualizationUITests.xctest"
                BlueprintName = "MBlocksVisualizationUITests"
                ReferencedContainer = "container:MBlocksVisualization.xcodeproj">
@@ -52,7 +52,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C30B12E1D9314430005C2B7"
+            BlueprintIdentifier = "3C30B17B1D9327830005C2B7"
             BuildableName = "MBlocksVisualization.app"
             BlueprintName = "MBlocksVisualization"
             ReferencedContainer = "container:MBlocksVisualization.xcodeproj">
@@ -75,12 +75,19 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C30B12E1D9314430005C2B7"
+            BlueprintIdentifier = "3C30B17B1D9327830005C2B7"
             BuildableName = "MBlocksVisualization.app"
             BlueprintName = "MBlocksVisualization"
             ReferencedContainer = "container:MBlocksVisualization.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "OS_ACTIVITY_MODE"
+            value = "DISABLE"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -94,7 +101,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3C30B12E1D9314430005C2B7"
+            BlueprintIdentifier = "3C30B17B1D9327830005C2B7"
             BuildableName = "MBlocksVisualization.app"
             BlueprintName = "MBlocksVisualization"
             ReferencedContainer = "container:MBlocksVisualization.xcodeproj">
