@@ -64,10 +64,9 @@ class HomeModel: NSObject, URLSessionDataDelegate {
             
         }
         
-        print(newJSONResult)
         var jsonElement: NSDictionary = NSDictionary()
         let blocks: NSMutableArray = NSMutableArray()
-        
+        //print(newJSONResult)
         for thing in newJSONResult {
             jsonElement = thing as! NSDictionary
             
@@ -80,15 +79,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 let zPos = jsonElement["zPos"] as? String,
                 let xOri = jsonElement["xOri"] as? String,
                 let yOri = jsonElement["zOri"] as? String,
-                let zOri = jsonElement["zOri"] as? String,
-                let color = jsonElement["color"] as? String,
-                let blockType = jsonElement["blockType"] as? String,
-                let xPosGoal = jsonElement["xPosGoal"] as? String,
-                let yPosGoal = jsonElement["yPosGoal"] as? String,
-                let zPosGoal = jsonElement["zPosGoal"] as? String,
-                let xOriGoal = jsonElement["xOriGoal"] as? String,
-                let yOriGoal = jsonElement["zOriGoal"] as? String,
-                let zOriGoal = jsonElement["zOriGoal"] as? String
+                let zOri = jsonElement["zOri"] as? String
             {
                 block.cubeNumber = cubeNumber
                 block.xPos = xPos
@@ -97,14 +88,14 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 block.xOri = xOri
                 block.yOri = yOri
                 block.zOri = zOri
-                block.color = color
-                block.cubeType = blockType
-                block.xPosGoal = xPosGoal
-                block.yPosGoal = yPosGoal
-                block.zPosGoal = zPosGoal
-                block.xOriGoal = xOriGoal
-                block.yOriGoal = yOriGoal
-                block.zOriGoal = zOriGoal
+                
+                let extras = ["color", "colorGoal", "blockType", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal"]
+                
+                for e in extras {
+                    if (jsonElement[e] as? String) != nil {
+                        block.setValue(jsonElement[e] as? String, forKey: e)
+                    }
+                }
                 
             }
             

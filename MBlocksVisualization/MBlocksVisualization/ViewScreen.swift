@@ -15,6 +15,11 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     //var scnView: SCNView!
     var scnScene: SCNScene!
     var cameraNode: SCNNode!
+    var lastTime: TimeInterval = 0
+    var mainTimer = Timer()
+    var mainTimerSeconds = 0
+    var fps = 20
+    
     
     // NETWORKING
     var feedItems: NSArray = NSArray()
@@ -26,7 +31,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         setupView()
         setupScene()
         setupCamera()
-        spawnShape()
+        setupTimer()
+        spawnShape() // ERASE EVENTUALLY
         
         // NETWORKING
         let homeModel = HomeModel()
@@ -40,7 +46,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     }
     
     override var shouldAutorotate: Bool {
-        return false
+        return true
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -57,7 +63,21 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         // Pass the selected object to the new view controller.
     }
     */
+
+    func setupTimer() {
+        
+        mainTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewScreen.timerActions), userInfo: nil, repeats: true)
+    }
     
+    func timerActions() {
+        mainTimerSeconds += 1
+        
+        receiveData()
+        if(mainTimerSeconds % 6 == 0) {
+            print(feedItems)
+        }
+    }
+
     func setupView() {
         //scnView = self.view as! SCNView
         
@@ -151,7 +171,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     
     
     // NETWORKING
-    func refresh() {
+    func receiveData() {
         let homeModel = HomeModel()
         homeModel.delegate = self
         homeModel.downloadItems()
@@ -234,9 +254,14 @@ class ViewScreen: UIViewController, HomeModelProtocal {
 extension ViewScreen: SCNSceneRendererDelegate {
     // 2
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        /*if (time - lastTime) > (1.0/Double(fps)) {
+            print("new frame")
+            refresh()
+            print(feedItems)
+        }*/
         
+        lastTime = time
         cleanScene()
-        
     }
 }
 

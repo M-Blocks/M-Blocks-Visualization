@@ -28,6 +28,7 @@ class BlockModel: NSObject {
     var xOriGoal: String?
     var yOriGoal: String?
     var zOriGoal: String?
+    var colorGoal: String?
     
     var sceneNode: SCNNode?
     
@@ -71,7 +72,8 @@ class BlockModel: NSObject {
     
     //prints object's current state
     override var description: String {
-        return "Cube Number: \(cubeNumber), x: \(xPos), y: \(yPos), z: \(zPos)"
+        //return String(describing: cubeNumber)
+        return "Cube Number: \(self.cubeNumber!), x: \(self.xPos!), y: \(self.yPos!), z: \(self.zPos!)"
     }
     
     
