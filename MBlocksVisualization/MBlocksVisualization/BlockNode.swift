@@ -22,6 +22,6 @@ class BlockNode: SCNNode {
     }
     
     func setBlock(block: BlockModel) {
-        
+        self.block = block
     }
 }

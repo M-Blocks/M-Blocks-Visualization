@@ -19,6 +19,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     var mainTimer = Timer()
     var mainTimerSeconds = 0
     var fps = 20
+    var blockModels: [String:BlockModel] = [:]
     
     
     // NETWORKING
@@ -32,7 +33,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         setupScene()
         setupCamera()
         setupTimer()
-        spawnShape() // ERASE EVENTUALLY
+        //spawnShape() // ERASE EVENTUALLY
         
         // NETWORKING
         let homeModel = HomeModel()
@@ -74,7 +75,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         
         receiveData()
         if(mainTimerSeconds % 6 == 0) {
-            print(feedItems)
+            //print(feedItems)
         }
     }
 
@@ -249,6 +250,89 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         task.resume()
     }
     
+    func reRender() {
+        // 1
+        
+        /*for node in scnScene.rootNode.childNodes {
+            node.removeFromParentNode()
+        }*/
+        
+        for item in feedItems {
+            let b = item as! BlockModel
+            
+            let cubeNum = b.cubeNumber!
+            
+            
+            let oldCube = blockModels[cubeNum]
+            
+            if oldCube != nil {
+                /* first need to check if that blockModel even exists) */
+                /* PROBABLY NEVER NEEDS RE RENDERING JUST TRANSLATION */
+                if needsReRendering(old: oldCube!, new: b) {
+                    oldCube!.sceneNode?.removeFromParentNode()
+                    
+                    blockModels.updateValue(b, forKey: cubeNum)
+                    
+                    var geometry:SCNGeometry
+                    geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.2)
+                    
+                    var color = UIColor.orange
+                    if b.color == "green" {
+                        color = UIColor.green
+                    } else {
+                        color = UIColor.red
+                    }
+                    geometry.materials.first?.diffuse.contents = color
+                    
+                    let geometryNode = SCNNode(geometry: geometry)
+                    geometryNode.position = SCNVector3(x: Float(b.xOri!)!, y: Float(b.yOri!)!, z: Float(b.zOri!)!)
+                    
+                    scnScene.rootNode.addChildNode(geometryNode)
+                    b.setNode(node: geometryNode)
+                } else {
+                    
+                }
+            } else {
+                
+                blockModels.updateValue(b, forKey: cubeNum)
+                var geometry:SCNGeometry
+                geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.2)
+                
+                var color = UIColor.orange
+                if b.color == "green" {
+                    color = UIColor.green
+                } else {
+                    color = UIColor.red
+                }
+                geometry.materials.first?.diffuse.contents = color
+                
+                let geometryNode = SCNNode(geometry: geometry)
+                geometryNode.position = SCNVector3(x: Float(b.xOri!)!, y: Float(b.yOri!)!, z: Float(b.zOri!)!)
+                
+                scnScene.rootNode.addChildNode(geometryNode)
+                b.setNode(node: geometryNode)
+            }
+            
+        }
+        
+        
+    }
+    
+    func needsReRendering(old: BlockModel, new: BlockModel) -> Bool {
+        let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "color", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal", "colorGoal"]
+        
+        for v in variables {
+            print(v)
+            if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
+                print("needs rerendering")
+                return true
+                
+            }
+        }
+        print("no rerendering needed")
+        return false
+    }
+    
 }
 
 extension ViewScreen: SCNSceneRendererDelegate {
@@ -259,7 +343,7 @@ extension ViewScreen: SCNSceneRendererDelegate {
             refresh()
             print(feedItems)
         }*/
-        
+        reRender()
         lastTime = time
         cleanScene()
     }
