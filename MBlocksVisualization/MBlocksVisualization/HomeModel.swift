@@ -94,6 +94,16 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 for e in extras {
                     if (jsonElement[e] as? String) != nil {
                         block.setValue(jsonElement[e] as? String, forKey: e)
+                    } else {
+                        if e == "color" {
+                            block.color = "green"
+                        } else if e == "colorGoal" {
+                            block.colorGoal = "green"
+                        } else if e == "blockType" {
+                            block.blockType = "normal"
+                        } else {
+                            block.setValue(jsonElement[e.replacingOccurrences(of: "Goal", with: "")] as? String, forKey: e)
+                        }
                     }
                 }
                 
