@@ -20,7 +20,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     var mainTimerSeconds = 0
     var fps = 20
     var blockModels: [String:BlockModel] = [:]
-    
+    var totalRenders = 0
     
     // NETWORKING
     var feedItems: NSArray = NSArray()
@@ -107,7 +107,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         cameraNode.camera = SCNCamera()
         // 3
         //cameraNode.position = SCNVector3(x: 0, y: 0, z: 10)
-        cameraNode.position = SCNVector3(x: 0, y: 5, z: 10)
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: -5)
         // 4
         scnScene.rootNode.addChildNode(cameraNode)
     }
@@ -115,7 +115,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func spawnShape() {
         
         var geometry:SCNGeometry
-        geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.2)
+        geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
         
         let color = UIColor.orange
         geometry.materials.first?.diffuse.contents = color
@@ -143,15 +143,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     }
     
     func handleTouchFor(node: SCNNode) {
+        let box = blockModels[node.name!]!
         
-        // use node.name
-        /*if node.name == "GOOD" {
-            game.score += 1
-            node.removeFromParentNode()
-        } else if node.name == "BAD" {
-            game.lives -= 1
-            node.removeFromParentNode()
-        }*/
+        print("You touched: \(box.cubeNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -274,7 +268,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                     blockModels.updateValue(b, forKey: cubeNum)
                     
                     var geometry:SCNGeometry
-                    geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.2)
+                    geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
                     
                     var color = UIColor.orange
                     if b.color == "green" {
@@ -287,16 +281,19 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                     let geometryNode = SCNNode(geometry: geometry)
                     geometryNode.position = SCNVector3(x: Float(b.xOri!)!, y: Float(b.yOri!)!, z: Float(b.zOri!)!)
                     
+                    geometryNode.name = b.cubeNumber
+                    
                     scnScene.rootNode.addChildNode(geometryNode)
+                    totalRenders = totalRenders+1
                     b.setNode(node: geometryNode)
                 } else {
                     
                 }
             } else {
-                
+                print("new cube")
                 blockModels.updateValue(b, forKey: cubeNum)
                 var geometry:SCNGeometry
-                geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.2)
+                geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.05)
                 
                 var color = UIColor.orange
                 if b.color == "green" {
@@ -309,12 +306,15 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                 let geometryNode = SCNNode(geometry: geometry)
                 geometryNode.position = SCNVector3(x: Float(b.xOri!)!, y: Float(b.yOri!)!, z: Float(b.zOri!)!)
                 
+                geometryNode.name = b.cubeNumber
+                
                 scnScene.rootNode.addChildNode(geometryNode)
+                totalRenders = totalRenders+1
                 b.setNode(node: geometryNode)
             }
             
         }
-        
+        print(totalRenders)
         
     }
     
@@ -322,14 +322,13 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "color", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal", "colorGoal"]
         
         for v in variables {
-            print(v)
             if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
+                print(v)
                 print("needs rerendering")
                 return true
                 
             }
         }
-        print("no rerendering needed")
         return false
     }
     
