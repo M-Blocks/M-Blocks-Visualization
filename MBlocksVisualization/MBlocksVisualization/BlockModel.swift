@@ -21,7 +21,7 @@ class BlockModel: NSObject {
     var yOri: String?
     var zOri: String?
     var color: String?
-    var cubeType: String?
+    var blockType: String?
     var xPosGoal: String?
     var yPosGoal: String?
     var zPosGoal: String?
@@ -40,7 +40,7 @@ class BlockModel: NSObject {
     }
     
     //construct with all parameters
-    init(cubeNumber: String, xPos: String, yPos: String, zPos: String, xOri: String, yOri: String, zOri: String, color: String, cubeType: String, xPosGoal: String, yPosGoal: String, zPosGoal: String, xOriGoal: String, yOriGoal: String, zOriGoal: String) {
+    init(cubeNumber: String, xPos: String, yPos: String, zPos: String, xOri: String, yOri: String, zOri: String, color: String, blockType: String, xPosGoal: String, yPosGoal: String, zPosGoal: String, xOriGoal: String, yOriGoal: String, zOriGoal: String) {
         self.cubeNumber = cubeNumber
         self.xPos = xPos
         self.yPos = yPos
@@ -49,7 +49,7 @@ class BlockModel: NSObject {
         self.yOri = yOri
         self.zOri = zOri
         self.color = color
-        self.cubeType = cubeType
+        self.blockType = blockType
         self.xPosGoal = xPosGoal
         self.yPosGoal = yPosGoal
         self.zPosGoal = zPosGoal
