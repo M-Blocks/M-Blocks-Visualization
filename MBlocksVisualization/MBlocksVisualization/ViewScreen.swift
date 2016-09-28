@@ -28,22 +28,27 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view.
+        
+        // GRAPHICS SETUP
         setupView()
         setupScene()
         setupCamera()
-        setupTimer()
-        //spawnShape() // ERASE EVENTUALLY
         
         // NETWORKING
         let homeModel = HomeModel()
         homeModel.delegate = self
         homeModel.downloadItems()
+        
+        // Sets up a 1 second timer that calls timerActions()
+        mainTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewScreen.timerActions), userInfo: nil, repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+        
     }
     
     override var shouldAutorotate: Bool {
@@ -64,84 +69,51 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         // Pass the selected object to the new view controller.
     }
     */
-
-    func setupTimer() {
-        
-        mainTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewScreen.timerActions), userInfo: nil, repeats: true)
-    }
     
     func timerActions() {
-        mainTimerSeconds += 1
+        mainTimerSeconds += 1 /// keeps track of time
         
-        receiveData()
-        if(mainTimerSeconds % 6 == 0) {
-            //print(feedItems)
-        }
+        downloadData() // downloads cube data
     }
 
+    // Sets up the options of the SceneView
     func setupView() {
-        //scnView = self.view as! SCNView
-        
-        // 1
         scnView.showsStatistics = true
-        // 2
         scnView.allowsCameraControl = true
-        // 3
         scnView.autoenablesDefaultLighting = true
-        
         scnView.delegate = self
         scnView.isPlaying = true
-        //scnView.playing = true
     }
     
+    // Sets up the sceen that will be placed in the SceneView
     func setupScene() {
         scnScene = SCNScene()
-        scnView.scene = scnScene
         scnScene.background.contents = "Resources/Background_Diffuse.png"
+        
+        scnView.scene = scnScene
     }
 
+    // Sets up the camera to be used in our scene
     func setupCamera() {
-        // 1
         cameraNode = SCNNode()
-        // 2
         cameraNode.camera = SCNCamera()
-        // 3
-        //cameraNode.position = SCNVector3(x: 0, y: 0, z: 10)
         cameraNode.position = SCNVector3(x: 0, y: 0, z: -5)
-        // 4
+        
         scnScene.rootNode.addChildNode(cameraNode)
     }
     
-    func spawnShape() {
-        
-        var geometry:SCNGeometry
-        geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
-        
-        let color = UIColor.orange
-        geometry.materials.first?.diffuse.contents = color
-        
-        let geometryNode = SCNNode(geometry: geometry)
-        
-        /*geometryNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
-        
-        let force = SCNVector3(x: 0, y: 15, z: 0)
-        let position = SCNVector3(x: 0.05, y: 0.05, z: 0.05)
-        geometryNode.physicsBody?.applyForce(force, at: position, asImpulse: true)*/
-        
-        scnScene.rootNode.addChildNode(geometryNode)
-    }
-    
+    // FIX
+    // Used to delete unnecessary objects
     func cleanScene() {
-        // 1
         for node in scnScene.rootNode.childNodes {
-            // 2
             if node.presentation.position.y < -2 {
-                // 3
                 node.removeFromParentNode()
             }
         }
     }
     
+    // FIX
+    // Handles what happens when a block is touched
     func handleTouchFor(node: SCNNode) {
         let box = blockModels[node.name!]!
         
@@ -149,25 +121,20 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         sendMyRequest(box)
     }
     
+    // Finds out what block is touched and calls the function that deals with it
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // 1
         let touch = touches.first!
-        // 2
         let location = touch.location(in: scnView)
-        // 3
         let hitResults = scnView.hitTest(location, options: nil)
-        // 4
         if hitResults.count > 0 {
-            // 5
             let result = hitResults.first!
-            // 6
             handleTouchFor(node: result.node)
         }
     }
     
     
     // NETWORKING
-    func receiveData() {
+    func downloadData() {
         let homeModel = HomeModel()
         homeModel.delegate = self
         homeModel.downloadItems()
@@ -175,7 +142,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func itemsDownloaded(_ items: NSArray) {
         feedItems = items
     }
-    
+    // Sends updated Block data to the database
     func sendMyRequest(_ block: BlockModel) {
         print("sending a reqeust")
         
@@ -188,23 +155,13 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             color = "green"
         }
         
-        
         //FIX currently is sending color for color, but color should be sent for colorGoal, the
         // cube should then change it's color to colorGoal and it should edit the color in the database
-        // Add one parameter
-        //let urlWithParams = scriptUrl + "?cubeNumber=6&xPos=6&yPos=6&zPos=6&xOri=6&yOri=6&zOri=6"
         let urlWithParams = scriptUrl + "?cubeNumber=\(block.cubeNumber!)&xPos=\(block.xPos!)&yPos=\(block.yPos!)&zPos=\(block.zPos!)&xOri=\(block.xOri!)&yOri=\(block.yOri!)&zOri=\(block.zOri!)&color=\(color)&xPosGoal=\(block.xPosGoal!)&yPosGoal=\(block.yPosGoal!)&zPosGoal=\(block.zPosGoal!)&xOriGoal=\(block.xOriGoal!)&yOriGoal=\(block.yOriGoal!)&zOriGoal=\(block.zOri!)&colorGoal=\(color)&blockType=\(block.blockType!)"
         
         print(urlWithParams)
-        // Create NSURL Ibject
+        
         let myUrl = URL(string: urlWithParams);
-        
-        // Creaste URL Request
-        //let request = NSMutableURLRequest(url:myUrl!);
-        
-        // Set request HTTP method to GET. It could be POST as well
-        //request.httpMethod = "GET"
-        
         
         let task = URLSession.shared.dataTask(with: myUrl!) { data, response, error in
             guard error == nil else {
@@ -221,72 +178,24 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     }
     
     func reRender() {
-        // 1
-        
-        /*for node in scnScene.rootNode.childNodes {
-            node.removeFromParentNode()
-        }*/
-        
         for item in feedItems {
             let b = item as! BlockModel
-            
             let cubeNum = b.cubeNumber!
-            
-            
             let oldCube = blockModels[cubeNum]
             
             if oldCube != nil {
                 /* first need to check if that blockModel even exists) */
                 /* PROBABLY NEVER NEEDS RE RENDERING JUST TRANSLATION */
                 if needsReRendering(old: oldCube!, new: b) {
+                    print("Update old cube")
                     oldCube!.sceneNode?.removeFromParentNode()
-                    
-                    blockModels.updateValue(b, forKey: cubeNum)
-                    
-                    var geometry:SCNGeometry
-                    geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
-                    
-                    var color = UIColor.orange
-                    if b.color == "green" {
-                        color = UIColor.green
-                    } else {
-                        color = UIColor.red
-                    }
-                    geometry.materials.first?.diffuse.contents = color
-                    
-                    let geometryNode = SCNNode(geometry: geometry)
-                    geometryNode.position = SCNVector3(x: Float(b.xPos!)!, y: Float(b.yPos!)!, z: Float(b.zPos!)!)
-                    
-                    geometryNode.name = b.cubeNumber
-                    
-                    scnScene.rootNode.addChildNode(geometryNode)
-                    totalRenders = totalRenders+1
-                    b.setNode(node: geometryNode)
+                    addBlock(block: b, blockNum: cubeNum)
                 } else {
                     
                 }
             } else {
-                print("new cube")
-                blockModels.updateValue(b, forKey: cubeNum)
-                var geometry:SCNGeometry
-                geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
-                
-                var color = UIColor.orange
-                if b.color == "green" {
-                    color = UIColor.green
-                } else {
-                    color = UIColor.red
-                }
-                geometry.materials.first?.diffuse.contents = color
-                
-                let geometryNode = SCNNode(geometry: geometry)
-                geometryNode.position = SCNVector3(x: Float(b.xPos!)!, y: Float(b.yPos!)!, z: Float(b.zPos!)!)
-                
-                geometryNode.name = b.cubeNumber
-                
-                scnScene.rootNode.addChildNode(geometryNode)
-                totalRenders = totalRenders+1
-                b.setNode(node: geometryNode)
+                print("Add new cube")
+                addBlock(block: b, blockNum: cubeNum)
             }
             
         }
@@ -294,15 +203,38 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         
     }
     
+    func addBlock(block: BlockModel, blockNum: String) {
+        blockModels.updateValue(block, forKey: blockNum)
+        
+        var geometry:SCNGeometry
+        geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
+        
+        var color = UIColor.orange
+        if block.color == "green" {
+            color = UIColor.green
+        } else {
+            color = UIColor.red
+        }
+        geometry.materials.first?.diffuse.contents = color
+        
+        let geometryNode = SCNNode(geometry: geometry)
+        geometryNode.position = SCNVector3(x: Float(block.xPos!)!, y: Float(block.yPos!)!, z: Float(block.zPos!)!)
+        
+        geometryNode.name = block.cubeNumber
+        
+        scnScene.rootNode.addChildNode(geometryNode)
+        totalRenders = totalRenders+1
+        block.setNode(node: geometryNode)
+    }
+    
+    // Determines if a block needs to be moved/rerendered (aka if its data has changed)
     func needsReRendering(old: BlockModel, new: BlockModel) -> Bool {
         let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "color", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal", "colorGoal"]
         
         for v in variables {
             if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
-                print(v)
-                print("needs rerendering")
+                print("\(v) is outdated. ReRendering/Translation needed.")
                 return true
-                
             }
         }
         return false
@@ -313,16 +245,13 @@ class ViewScreen: UIViewController, HomeModelProtocal {
 extension ViewScreen: SCNSceneRendererDelegate {
     // 2
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        /*if (time - lastTime) > (1.0/Double(fps)) {
-            print("new frame")
-            refresh()
-            print(feedItems)
-        }*/
         reRender()
         lastTime = time
-        //cleanScene()
+        cleanScene()
     }
 }
+
+
 
 
 
