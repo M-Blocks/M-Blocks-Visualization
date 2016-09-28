@@ -146,6 +146,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         let box = blockModels[node.name!]!
         
         print("You touched: \(box.cubeNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
+        sendMyRequest(box)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -174,50 +175,25 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func itemsDownloaded(_ items: NSArray) {
         feedItems = items
     }
-    func sendMyRequest(_ data: String) {
+    
+    func sendMyRequest(_ block: BlockModel) {
+        print("sending a reqeust")
         
         let scriptUrl = "http://mitmblocks.com/database_editor.php"
-        var cubeNumber = "0"
-        var xPos = "0"
-        var yPos = "0"
-        var zPos = "0"
-        var xOri = "0"
-        var yOri = "0"
-        var zOri = "0"
-        var color = "blue"
         
-        
-        
-        if (data != "new") {
-            var new_data = data.replacingOccurrences(of: "[", with: "")
-            new_data = new_data.replacingOccurrences(of: "]", with: "")
-            let usefulData = new_data.components(separatedBy: ", ")
-            cubeNumber = usefulData[0]
-            xPos = usefulData[1]
-            yPos = usefulData[2]
-            zPos = usefulData[3]
-            xOri = usefulData[4]
-            yOri = usefulData[5]
-            zOri = usefulData[6]
-            color = usefulData[7]
-            if(color == "green") {
-                color = "red"
-            } else {
-                color = "green"
-            }
+        var color = "white"
+        if block.color == "green" {
+            color = "red"
         } else {
-            cubeNumber = String(Int(arc4random_uniform(UInt32(100))))
-            xPos = String(Int(arc4random_uniform(UInt32(100))))
-            yPos = String(Int(arc4random_uniform(UInt32(100))))
-            zPos = String(Int(arc4random_uniform(UInt32(100))))
-            xOri = String(Int(arc4random_uniform(UInt32(100))))
-            yOri = String(Int(arc4random_uniform(UInt32(100))))
-            zOri = String(Int(arc4random_uniform(UInt32(100))))
-            color = "blue"
+            color = "green"
         }
+        
+        
+        //FIX currently is sending color for color, but color should be sent for colorGoal, the
+        // cube should then change it's color to colorGoal and it should edit the color in the database
         // Add one parameter
         //let urlWithParams = scriptUrl + "?cubeNumber=6&xPos=6&yPos=6&zPos=6&xOri=6&yOri=6&zOri=6"
-        let urlWithParams = scriptUrl + "?cubeNumber=\(cubeNumber)&xPos=\(xPos)&yPos=\(yPos)&zPos=\(zPos)&xOri=\(xOri)&yOri=\(yOri)&zOri=\(zOri)&color=\(color)"
+        let urlWithParams = scriptUrl + "?cubeNumber=\(block.cubeNumber!)&xPos=\(block.xPos!)&yPos=\(block.yPos!)&zPos=\(block.zPos!)&xOri=\(block.xOri!)&yOri=\(block.yOri!)&zOri=\(block.zOri!)&color=\(color)&xPosGoal=\(block.xPosGoal!)&yPosGoal=\(block.yPosGoal!)&zPosGoal=\(block.zPosGoal!)&xOriGoal=\(block.xOriGoal!)&yOriGoal=\(block.yOriGoal!)&zOriGoal=\(block.zOri!)&colorGoal=\(color)&blockType=\(block.blockType!)"
         
         print(urlWithParams)
         // Create NSURL Ibject
@@ -268,7 +244,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                     blockModels.updateValue(b, forKey: cubeNum)
                     
                     var geometry:SCNGeometry
-                    geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
+                    geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
                     
                     var color = UIColor.orange
                     if b.color == "green" {
@@ -279,7 +255,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                     geometry.materials.first?.diffuse.contents = color
                     
                     let geometryNode = SCNNode(geometry: geometry)
-                    geometryNode.position = SCNVector3(x: Float(b.xOri!)!, y: Float(b.yOri!)!, z: Float(b.zOri!)!)
+                    geometryNode.position = SCNVector3(x: Float(b.xPos!)!, y: Float(b.yPos!)!, z: Float(b.zPos!)!)
                     
                     geometryNode.name = b.cubeNumber
                     
@@ -293,7 +269,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                 print("new cube")
                 blockModels.updateValue(b, forKey: cubeNum)
                 var geometry:SCNGeometry
-                geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.05)
+                geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
                 
                 var color = UIColor.orange
                 if b.color == "green" {
@@ -304,7 +280,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                 geometry.materials.first?.diffuse.contents = color
                 
                 let geometryNode = SCNNode(geometry: geometry)
-                geometryNode.position = SCNVector3(x: Float(b.xOri!)!, y: Float(b.yOri!)!, z: Float(b.zOri!)!)
+                geometryNode.position = SCNVector3(x: Float(b.xPos!)!, y: Float(b.yPos!)!, z: Float(b.zPos!)!)
                 
                 geometryNode.name = b.cubeNumber
                 
@@ -344,7 +320,7 @@ extension ViewScreen: SCNSceneRendererDelegate {
         }*/
         reRender()
         lastTime = time
-        cleanScene()
+        //cleanScene()
     }
 }
 

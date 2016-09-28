@@ -21,7 +21,7 @@ class BlockModel: NSObject {
     var yOri: String?
     var zOri: String?
     var color: String?
-    var blockType: String?
+    var blockType: String? = "normal"
     var xPosGoal: String?
     var yPosGoal: String?
     var zPosGoal: String?
@@ -49,13 +49,14 @@ class BlockModel: NSObject {
         self.yOri = yOri
         self.zOri = zOri
         self.color = color
-        self.blockType = blockType
         self.xPosGoal = xPosGoal
         self.yPosGoal = yPosGoal
         self.zPosGoal = zPosGoal
         self.xOriGoal = xOriGoal
         self.yOriGoal = yOriGoal
         self.zOriGoal = zOriGoal
+        self.colorGoal = color
+        self.blockType = "normal"
     }
     
     func setNode(node: SCNNode) {
