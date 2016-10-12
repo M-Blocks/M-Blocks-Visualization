@@ -21,6 +21,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     var fps = 20
     var blockModels: [String:BlockModel] = [:]
     var totalRenders = 0
+    var baseInitiated: Bool = false
     
     // NETWORKING
     var feedItems: NSArray = NSArray()
@@ -97,7 +98,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func setupCamera() {
         cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: -5)
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 20)
         
         scnScene.rootNode.addChildNode(cameraNode)
     }
@@ -115,6 +116,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     // FIX
     // Handles what happens when a block is touched
     func handleTouchFor(node: SCNNode) {
+        
+        
         let box = blockModels[node.name!]!
         
         print("You touched: \(box.cubeNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
@@ -128,7 +131,13 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         let hitResults = scnView.hitTest(location, options: nil)
         if hitResults.count > 0 {
             let result = hitResults.first!
-            handleTouchFor(node: result.node)
+            if result.node.name != nil {
+                handleTouchFor(node: result.node)
+                
+                let material = result.node.geometry!.materials[result.geometryIndex]
+                print("Side touched: \(material.name)")
+            }
+            
         }
     }
     
@@ -154,7 +163,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         } else {
             color = "green"
         }
-        
         //FIX currently is sending color for color, but color should be sent for colorGoal, the
         // cube should then change it's color to colorGoal and it should edit the color in the database
         let urlWithParams = scriptUrl + "?cubeNumber=\(block.cubeNumber!)&xPos=\(block.xPos!)&yPos=\(block.yPos!)&zPos=\(block.zPos!)&xOri=\(block.xOri!)&yOri=\(block.yOri!)&zOri=\(block.zOri!)&color=\(color)&xPosGoal=\(block.xPosGoal!)&yPosGoal=\(block.yPosGoal!)&zPosGoal=\(block.zPosGoal!)&xOriGoal=\(block.xOriGoal!)&yOriGoal=\(block.yOriGoal!)&zOriGoal=\(block.zOri!)&colorGoal=\(color)&blockType=\(block.blockType!)"
@@ -178,6 +186,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     }
     
     func reRender() {
+        if !baseInitiated {
+            setupBase()
+        }
         for item in feedItems {
             let b = item as! BlockModel
             let cubeNum = b.cubeNumber!
@@ -199,8 +210,24 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             }
             
         }
-        print(totalRenders)
+        //print(totalRenders)
         
+    }
+    
+    func setupBase() {
+        var geometry:SCNGeometry
+        geometry = SCNBox(width: 20.0, height: 1.0, length: 20.0, chamferRadius: 0.0)
+        
+        let color = UIColor.black
+        
+        geometry.materials.first?.diffuse.contents = color
+        
+        let geometryNode = SCNNode(geometry: geometry)
+        geometryNode.position = SCNVector3(x: 0, y: -1, z: 0)
+        
+        scnScene.rootNode.addChildNode(geometryNode)
+        
+        baseInitiated = true
     }
     
     func addBlock(block: BlockModel, blockNum: String) {
@@ -210,17 +237,40 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
         
         var color = UIColor.orange
+        var hue = CGFloat(0.0)
         if block.color == "green" {
             color = UIColor.green
+            hue = CGFloat(0.4)
         } else {
             color = UIColor.red
+            hue = CGFloat(1.0)
         }
         geometry.materials.first?.diffuse.contents = color
         
         let geometryNode = SCNNode(geometry: geometry)
         geometryNode.position = SCNVector3(x: Float(block.xPos!)!, y: Float(block.yPos!)!, z: Float(block.zPos!)!)
-        
         geometryNode.name = block.cubeNumber
+        
+        let sideOne = SCNMaterial()
+        sideOne.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideOne.name = "sideOne"
+        let sideTwo = SCNMaterial()
+        sideTwo.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideTwo.name = "sideTwo"
+        let sideThree = SCNMaterial()
+        sideThree.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideThree.name = "sideThree"
+        let sideFour = SCNMaterial()
+        sideFour.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideFour.name = "sidefour"
+        let sideFive = SCNMaterial()
+        sideFive.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideFive.name = "sideFive"
+        let sideSix = SCNMaterial()
+        sideSix.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideSix.name = "sideSix"
+        
+        geometry.materials = [sideOne, sideTwo, sideThree, sideFour, sideFive, sideSix]
         
         scnScene.rootNode.addChildNode(geometryNode)
         totalRenders = totalRenders+1
@@ -240,11 +290,37 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         return false
     }
     
+    func checkCamera() {
+        //let ang = scnView.pointOfView?.eulerAngles
+        let pos = scnView.pointOfView?.position
+        
+        //print(scnView.pointOfView?.eulerAngles)
+        /*if ang != nil {
+            if ang!.x > 0 {
+                scnView.allowsCameraControl = false
+                scnView.pointOfView?.eulerAngles = SCNVector3(x: ang!.x - ang!.x, y: ang!.y, z: ang!.z)
+            }
+        }
+        
+        
+        if pos != nil {
+            if pos!.y < 0 {
+                scnView.allowsCameraControl = false
+                scnView.pointOfView?.position = SCNVector3(x: pos!.x, y: 0.0, z: pos!.z)
+            } else {
+                scnView.allowsCameraControl = true
+            }
+        }*/
+        
+        
+    }
+    
 }
 
 extension ViewScreen: SCNSceneRendererDelegate {
     // 2
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        checkCamera()
         reRender()
         lastTime = time
         cleanScene()
