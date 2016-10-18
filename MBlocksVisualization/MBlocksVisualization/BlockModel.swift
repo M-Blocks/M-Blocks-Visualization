@@ -29,6 +29,9 @@ class BlockModel: NSObject {
     var yOriGoal: String?
     var zOriGoal: String?
     var colorGoal: String?
+    var xTempGoal: Int = 0
+    var yTempGoal: Int = 0
+    var zTempGoal: Int = 0
     
     var sceneNode: SCNNode?
     
@@ -57,6 +60,9 @@ class BlockModel: NSObject {
         self.zOriGoal = zOriGoal
         self.colorGoal = color
         self.blockType = "normal"
+        self.xTempGoal = Int(xPos)!
+        self.yTempGoal = Int(yPos)!
+        self.zTempGoal = Int(zPos)!
     }
     
     func setNode(node: SCNNode) {

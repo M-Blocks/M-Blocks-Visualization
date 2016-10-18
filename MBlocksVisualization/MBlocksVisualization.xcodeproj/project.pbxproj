@@ -24,6 +24,7 @@
 		3C5C5DC41D9C41E100BDEA93 /* MBlocksTitleLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C5C5DC31D9C41E100BDEA93 /* MBlocksTitleLogo.png */; };
 		3C5C5DC71D9C46CC00BDEA93 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C5C5DC61D9C46CC00BDEA93 /* MapKit.framework */; };
 		3CB61DBA1D9C5107003DD550 /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CB61DB91D9C5107003DD550 /* blocks.png */; };
+		3CF82F7E1DB0103F00D38B2F /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF82F7D1DB0103F00D38B2F /* Numbers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		3C5C5DC31D9C41E100BDEA93 /* MBlocksTitleLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBlocksTitleLogo.png; sourceTree = "<group>"; };
 		3C5C5DC61D9C46CC00BDEA93 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		3CB61DB91D9C5107003DD550 /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blocks.png; sourceTree = "<group>"; };
+		3CF82F7D1DB0103F00D38B2F /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 				3C30B1861D9327830005C2B7 /* Assets.xcassets */,
 				3C30B1B11D9327C90005C2B7 /* Resources */,
 				3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */,
+				3CF82F7D1DB0103F00D38B2F /* Numbers.swift */,
 				3C30B1881D9327830005C2B7 /* LaunchScreen.storyboard */,
 				3C30B18B1D9327830005C2B7 /* Info.plist */,
 				3C30B1B81D9327E10005C2B7 /* BlockModel.swift */,
@@ -320,6 +323,7 @@
 				3C30B1B71D9327D70005C2B7 /* ViewScreen.swift in Sources */,
 				3C30B1BD1D9327E90005C2B7 /* BlockNode.swift in Sources */,
 				3C30B1BB1D9327E60005C2B7 /* HomeModel.swift in Sources */,
+				3CF82F7E1DB0103F00D38B2F /* Numbers.swift in Sources */,
 				3C30B1801D9327830005C2B7 /* AppDelegate.swift in Sources */,
 				3C30B1AE1D9327A40005C2B7 /* StartScreen.swift in Sources */,
 				3C30B1B91D9327E10005C2B7 /* BlockModel.swift in Sources */,

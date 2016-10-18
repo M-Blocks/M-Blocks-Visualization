@@ -78,11 +78,18 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O4n-8e-Kz5">
                                 <subviews>
                                     <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="MBlocksTitleLogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="qNl-0g-Ui5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cnQ-rL-Gaf">
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstItem="cnQ-rL-Gaf" firstAttribute="top" secondItem="O4n-8e-Kz5" secondAttribute="top" constant="10" id="Eku-9m-bJI"/>
                                     <constraint firstAttribute="bottom" secondItem="qNl-0g-Ui5" secondAttribute="bottom" constant="8" id="INX-LA-kC5"/>
                                     <constraint firstItem="qNl-0g-Ui5" firstAttribute="centerX" secondItem="O4n-8e-Kz5" secondAttribute="centerX" id="ae6-pt-ivM"/>
+                                    <constraint firstItem="cnQ-rL-Gaf" firstAttribute="leading" secondItem="O4n-8e-Kz5" secondAttribute="leading" constant="10" id="b3c-Sn-vRd"/>
                                     <constraint firstItem="qNl-0g-Ui5" firstAttribute="top" secondItem="O4n-8e-Kz5" secondAttribute="top" constant="8" id="fG5-2H-bd4"/>
                                     <constraint firstAttribute="height" constant="80" id="l3E-8K-NQq"/>
                                 </constraints>
@@ -100,12 +107,13 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="BlockNumberLabel" destination="cnQ-rL-Gaf" id="WLr-cW-EX1"/>
                         <outlet property="scnView" destination="hka-5P-RiZ" id="a6Q-hP-SeJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZKG-hj-K3X" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1181.5999999999999" y="102.99850074962519"/>
+            <point key="canvasLocation" x="1151" y="107"/>
         </scene>
     </scenes>
     <resources>
