@@ -113,7 +113,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             var exists = false
             for b in feedItems {
                 let bl = b as! BlockModel
-                if bl.cubeNumber! == node.name! {
+                if bl.blockNumber! == node.name! {
                     exists = true
                     break
                 }
@@ -132,9 +132,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func handleTouchFor(node: SCNNode) {
 
         let box = blockModels[node.name!]!
-        box.xPosGoal = String(Int(box.xPos!)! + 2)
-        print("You touched: \(box.cubeNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
-        sendMyRequest(box)
+        print("You touched: \(box.blockNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
+        //sendMyRequest(box)
         
     }
     
@@ -180,7 +179,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         }
         //FIX currently is sending color for color, but color should be sent for colorGoal, the
         // cube should then change it's color to colorGoal and it should edit the color in the database
-        let urlWithParams = scriptUrl + "?cubeNumber=\(block.cubeNumber!)&xPos=\(block.xPos!)&yPos=\(block.yPos!)&zPos=\(block.zPos!)&xOri=\(block.xOri!)&yOri=\(block.yOri!)&zOri=\(block.zOri!)&color=\(color)&xPosGoal=\(block.xPosGoal!)&yPosGoal=\(block.yPosGoal!)&zPosGoal=\(block.zPosGoal!)&xOriGoal=\(block.xOriGoal!)&yOriGoal=\(block.yOriGoal!)&zOriGoal=\(block.zOri!)&colorGoal=\(color)&blockType=\(block.blockType!)"
+        let urlWithParams = scriptUrl + "?cubeNumber=\(block.blockNumber!)&xPos=\(block.xPos)&yPos=\(block.yPos)&zPos=\(block.zPos)&xOri=\(block.xOri)&yOri=\(block.yOri)&zOri=\(block.zOri)&color=\(color)&colorGoal=\(color)"
         
         print(urlWithParams)
         
@@ -207,7 +206,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         
         for item in feedItems {
             let b = item as! BlockModel
-            let cubeNum = b.cubeNumber!
+            let cubeNum = b.blockNumber!
             let oldCube = blockModels[cubeNum]
             
             if oldCube != nil {
@@ -283,8 +282,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         geometry.materials.first?.diffuse.contents = color
         
         let geometryNode = SCNNode(geometry: geometry)
-        geometryNode.position = SCNVector3(x: Float(block.xPos!)!, y: Float(block.yPos!)!, z: Float(block.zPos!)!)
-        geometryNode.name = block.cubeNumber
+        geometryNode.position = SCNVector3(x: Float(block.xPos), y: Float(block.yPos), z: Float(block.zPos))
+        geometryNode.name = block.blockNumber
         
         let sideOne = SCNMaterial()
         sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
@@ -365,9 +364,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             hue = CGFloat(1.0)
         }
         
-        let x = Float(old.xPos!)!
-        let y = Float(old.yPos!)!
-        let z = Float(old.zPos!)!
+        let x = Float(old.xPos)
+        let y = Float(old.yPos)
+        let z = Float(old.zPos)
         old.sceneNode?.position = SCNVector3(x: x, y: y, z: z)
         
         
@@ -422,9 +421,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         } else {
             trans = [0.5*dir, 0.0, 0.5*dir]
         }
-        let x = Float(block.xPos!)!
-        let y = Float(block.yPos!)!
-        let z = Float(block.zPos!)!
+        let x = Float(block.xPos)
+        let y = Float(block.yPos)
+        let z = Float(block.zPos)
         block.sceneNode?.pivot = SCNMatrix4MakeTranslation(Float(trans[0]), Float(trans[1]), Float(trans[2]))
         block.sceneNode?.position = SCNVector3(x: x+Float(trans[0]), y: y+Float(trans[1]), z: z)
         
