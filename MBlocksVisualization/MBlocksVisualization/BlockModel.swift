@@ -13,38 +13,43 @@ class BlockModel: NSObject {
     
     //properties
     
-    var cubeNumber: String?
-    var xPos: String?
-    var yPos: String?
-    var zPos: String?
-    var xOri: String?
-    var yOri: String?
-    var zOri: String?
+    var blockNumber: String?
+    var xPos: Double = 0.0
+    var yPos: Double = 0.0
+    var zPos: Double = 0.0
+    var xOri: Double = 0.0
+    var yOri: Double = 0.0
+    var zOri: Double = 0.0
     var color: String?
-    var blockType: String? = "normal"
-    var xPosGoal: String?
-    var yPosGoal: String?
-    var zPosGoal: String?
-    var xOriGoal: String?
-    var yOriGoal: String?
-    var zOriGoal: String?
-    var colorGoal: String?
-    var xTempGoal: Int = 0
-    var yTempGoal: Int = 0
-    var zTempGoal: Int = 0
+    var faceUp: Int?
+    var cOne: String?
+    var cTwo: String?
+    var cThree: String?
+    var cFour: String?
+    var cFive: String?
+    var cSix: String?
+    var lOne: String?
+    var lTwo: String?
+    var lThree: String?
+    var lFour: String?
+    var lFive: String?
+    var lSix: String?
+    var located = false
     
     var sceneNode: SCNNode?
     
-    //empty constructor
-    
-    override init()
-    {
+    override init() {
         
     }
-    
+    // fix
     //construct with all parameters
-    init(cubeNumber: String, xPos: String, yPos: String, zPos: String, xOri: String, yOri: String, zOri: String, color: String, blockType: String, xPosGoal: String, yPosGoal: String, zPosGoal: String, xOriGoal: String, yOriGoal: String, zOriGoal: String) {
-        self.cubeNumber = cubeNumber
+    init(blockNumber: String, faceUp: Int, cOne: String, cTwo: String, cThree: String, cFour: String, cFive: String, cSix: String, lOne: String, lTwo: String, lThree: String, lFour: String, lFive: String, lSix: String, color: String) {
+        self.blockNumber = blockNumber
+        self.faceUp = faceUp
+        self.cOne = cOne
+    }
+    init(blockNumber: String, xPos: Double, yPos: Double, zPos: Double, xOri: Double, yOri: Double, zOri: Double, color: String) {
+        self.blockNumber = blockNumber
         self.xPos = xPos
         self.yPos = yPos
         self.zPos = zPos
@@ -52,17 +57,6 @@ class BlockModel: NSObject {
         self.yOri = yOri
         self.zOri = zOri
         self.color = color
-        self.xPosGoal = xPosGoal
-        self.yPosGoal = yPosGoal
-        self.zPosGoal = zPosGoal
-        self.xOriGoal = xOriGoal
-        self.yOriGoal = yOriGoal
-        self.zOriGoal = zOriGoal
-        self.colorGoal = color
-        self.blockType = "normal"
-        self.xTempGoal = Int(xPos)!
-        self.yTempGoal = Int(yPos)!
-        self.zTempGoal = Int(zPos)!
     }
     
     func setNode(node: SCNNode) {
@@ -80,7 +74,31 @@ class BlockModel: NSObject {
     //prints object's current state
     override var description: String {
         //return String(describing: cubeNumber)
-        return "Cube Number: \(self.cubeNumber!), x: \(self.xPos!), y: \(self.yPos!), z: \(self.zPos!)"
+        return "Cube Number: \(self.blockNumber!), x: \(self.xPos), y: \(self.yPos), z: \(self.zPos)"
+    }
+    
+    // FIX THE NUMBERS
+    func setXZOri() {
+        if self.faceUp == 1 {
+            self.xOri = (270).degreesToRadians
+        } else if self.faceUp == 2 {
+            self.zOri = 90.degreesToRadians
+        } else if self.faceUp == 3 {
+            self.xOri = 90.degreesToRadians
+        } else if self.faceUp == 4 {
+            self.zOri = (270).degreesToRadians
+        } else if self.faceUp == 5 {
+        } else if self.faceUp == 6 {
+            self.xOri = (180).degreesToRadians
+        }
+    }
+    
+    func getDirFacing(side: Int) -> String {
+        return "posX"
+    }
+    
+    func turnToFace(side: Int, dir: String) {
+        
     }
     
     
