@@ -73,23 +73,26 @@ class HomeModel: NSObject, URLSessionDataDelegate {
             let block = BlockModel()
             
             //the following insures none of the JsonElement values are nil through optional binding
-            if  let cubeNumber = jsonElement["cubeNumber"] as? String,
-                let xPos = jsonElement["xPos"] as? String,
-                let yPos = jsonElement["yPos"] as? String,
-                let zPos = jsonElement["zPos"] as? String,
-                let xOri = jsonElement["xOri"] as? String,
-                let yOri = jsonElement["zOri"] as? String,
-                let zOri = jsonElement["zOri"] as? String
+            if  let blockNumber = jsonElement["blockNumber"] as? String,
+                let faceUp = Int((jsonElement["faceUp"] as? String)!),
+                let cOne = jsonElement["cOne"] as? String,
+                let cTwo = jsonElement["cTwo"] as? String,
+                let cThree = jsonElement["cThree"] as? String,
+                let cFour = jsonElement["cFour"] as? String,
+                let cFive = jsonElement["cFive"] as? String,
+                let cSix = jsonElement["cSix"] as? String
             {
-                block.cubeNumber = cubeNumber
-                block.xPos = xPos
-                block.yPos = yPos
-                block.zPos = zPos
-                block.xOri = xOri
-                block.yOri = yOri
-                block.zOri = zOri
+                block.blockNumber = blockNumber
+                block.faceUp = faceUp
+                block.cOne = cOne
+                block.cTwo = cTwo
+                block.cThree = cThree
+                block.cFour = cFour
+                block.cFive = cFive
+                block.cSix = cSix
+                block.setXZOri()
                 
-                let extras = ["color", "colorGoal", "blockType", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal"]
+                let extras = ["color", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
                 
                 for e in extras {
                     if (jsonElement[e] as? String) != nil {
@@ -97,12 +100,8 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                     } else {
                         if e == "color" {
                             block.color = "green"
-                        } else if e == "colorGoal" {
-                            block.colorGoal = "green"
-                        } else if e == "blockType" {
-                            block.blockType = "normal"
                         } else {
-                            block.setValue(jsonElement[e.replacingOccurrences(of: "Goal", with: "")] as? String, forKey: e)
+                            block.setValue("64", forKey: e)
                         }
                     }
                 }
