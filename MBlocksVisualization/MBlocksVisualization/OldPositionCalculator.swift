@@ -9,7 +9,7 @@
 import Foundation
 
 
-class PositionCalculator: NSObject {
+class OldPositionCalculator: NSObject {
     
     var blocks: [String: BlockModel]! = [String: BlockModel]()
     
