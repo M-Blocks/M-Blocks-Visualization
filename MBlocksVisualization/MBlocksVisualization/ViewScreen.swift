@@ -22,6 +22,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     var blockModels: [String:BlockModel] = [:]
     var totalRenders = 0
     var baseInitiated: Bool = false
+    var posCalc: PositionCalculator?
     
     // NETWORKING
     var feedItems: NSArray = NSArray()
@@ -134,6 +135,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         let box = blockModels[node.name!]!
         print("You touched: \(box.blockNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
         //sendMyRequest(box)
+        //print(blockModels)
         
     }
     
@@ -164,6 +166,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func itemsDownloaded(_ items: NSArray) {
         feedItems = items
         BlockNumberLabel.text = "Blocks Avalaible: \(feedItems.count)"
+        if posCalc == nil {
+            posCalc = PositionCalculator(list: items as! [BlockModel])
+        }
     }
     // Sends updated Block data to the database
     func sendMyRequest(_ block: BlockModel) {
@@ -286,22 +291,22 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         geometryNode.name = block.blockNumber
         
         let sideOne = SCNMaterial()
-        sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(block.lOne!)!/Float(128.0)), alpha: 1.0)
         sideOne.name = "sideOne"
         let sideTwo = SCNMaterial()
-        sideTwo.diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideTwo.diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(block.lTwo!)!/Float(128.0)), alpha: 1.0)
         sideTwo.name = "sideTwo"
         let sideThree = SCNMaterial()
-        sideThree.diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideThree.diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(block.lThree!)!/Float(128.0)), alpha: 1.0)
         sideThree.name = "sideThree"
         let sideFour = SCNMaterial()
-        sideFour.diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideFour.diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(block.lFour!)!/Float(128.0)), alpha: 1.0)
         sideFour.name = "sidefour"
         let sideFive = SCNMaterial()
-        sideFive.diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideFive.diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(block.lFive!)!/Float(128.0)), alpha: 1.0)
         sideFive.name = "sideFive"
         let sideSix = SCNMaterial()
-        sideSix.diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
+        sideSix.diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(block.lSix!)!/Float(128.0)), alpha: 1.0)
         sideSix.name = "sideSix"
         geometry.materials = [sideOne, sideTwo, sideThree, sideFour, sideFive, sideSix]
         
@@ -315,36 +320,36 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     
     // Determines if a block needs to be moved/rerendered (aka if its data has changed)
     func needsReRendering(old: BlockModel, new: BlockModel) -> Bool {
-        let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "color", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal", "colorGoal"]
+        /*let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         
         for v in variables {
-            if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
-                print("\(v) is outdated. ReRendering/Translation needed.")
-                return true
+            if Array(v)[0] == "c" {
+                if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
+                    print("\(v) is outdated. ReRendering/Translation needed.")
+                    return true
+                }
+            } else {
+                if old.value(forKey: v) != new.value(forKey: v) {
+                    print("\(v) is outdated. ReRendering/Translation needed.")
+                    return true
+                }
             }
+            
         }
-        return false
+        return false*/
+        return true
     }
     
     func updateBlock(old: BlockModel, new: BlockModel) {
-        let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "color", "xPosGoal", "yPosGoal", "zPosGoal", "xOriGoal", "yOriGoal", "zOriGoal", "colorGoal"]
+        let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         
-       /* for v in variables {
-            if v == "xPos" {
-                if abs(Float(old.xPos!)! - Float(new.xPos!)!) < 0.01 {
-                    old.setValue((new.value(forKey: v) as! String), forKey: v)
-                } else {
-                    let deltaX = 0.2 * (Float(new.xPos!)! - Float(old.xPos!)!)
-                    let newX = Float(old.value(forKey: v) as! String)! + deltaX
-                    old.setValue(String(newX), forKey: "xPos")
-                }
-            } else {
-                old.setValue((new.value(forKey: v) as! String), forKey: v)
-            }
-        }*/
         for v in variables {
+            old.setValue(new.value(forKey: v), forKey: v)
+        }
+        posCalc?.position(block: old)
+        /*for v in variables {
             if ["xPos", "yPos", "zPos"].contains(v) {
-                
+         
                 if abs(Float((old.value(forKey: v) as! String))! - Float((new.value(forKey: v) as! String))!) < 0.01 {
                     old.setValue((new.value(forKey: v) as! String), forKey: v)
                 } else {
@@ -355,7 +360,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             } else {
                 old.setValue((new.value(forKey: v) as! String), forKey: v)
             }
-        }
+        }*/
         
         var hue = CGFloat(0.0)
         if old.color == "green" {
@@ -363,26 +368,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         } else {
             hue = CGFloat(1.0)
         }
+        old.sceneNode?.position = SCNVector3(x: Float(old.xPos), y: Float(old.yPos), z: Float(old.zPos))
         
-        let x = Float(old.xPos)
-        let y = Float(old.yPos)
-        let z = Float(old.zPos)
-        old.sceneNode?.position = SCNVector3(x: x, y: y, z: z)
-        
-        
-        // pivot in negative x direction
-        //pivotTowards(block: old, axis: "x", direction: 1)
-        /*let pq = Double((old.sceneNode?.rotation.w)!)
-        old.sceneNode?.pivot = SCNMatrix4MakeTranslation(-0.5, -0.5, 0)
-        old.sceneNode?.position = SCNVector3(x: x-0.5, y: y-0.5, z: z)
-        old.sceneNode?.rotation = SCNVector4(0,0,1, pq + 90.degreesToRadians)*/
-        //old.sceneNode?.pivot = SCNMatrix4MakeTranslation(0.5, 0.5, 0)
-        //old.sceneNode?.position = SCNVector3(x: x+0.5, y: y+0.5, z: z)
-        // FIX: NEED TO RESET PIVOT
-        
-        /*for x in (old.sceneNode?.geometry?.materials)! {
-            x.diffuse.contents = UIColor(hue: hue, saturation: 0.7, brightness: CGFloat(Float(arc4random_uniform(128))/Float(128.0)), alpha: 1.0)
-        }*/
     }
     
     func checkCamera() {
