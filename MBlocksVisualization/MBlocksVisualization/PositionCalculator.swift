@@ -12,6 +12,11 @@ import Foundation
 class PositionCalculator: NSObject {
     
     var blocks: [String: BlockModel]! = [String: BlockModel]()
+    
+    let rotations = [1:[180,90,0,270],
+                     2:[270,180,90,0],
+                     3:[0,270,180,90],
+                     4:[90,0,270,180]]
     let first: BlockModel?
     init(list: [BlockModel]) {
         for b in list {
@@ -55,6 +60,14 @@ class PositionCalculator: NSObject {
             connected.yPos = prevY
             connected.zPos = prevZ
             
+            
+            // new useful code
+            let firstIndex = block.relativeSideFaces().index(of: sidePrimary)
+            let secondIndex = connected.relativeSideFaces().index(of: sideSecondary)
+            let turn = rotations[firstIndex!]?[secondIndex!].degreesToRadians
+            
+            connected.yOri = (block.yOri + turn!) - (((block.yOri + turn!) / 360.degreesToRadians)*360.degreesToRadians)
+            //
             
             let facing = block.getDirFacing(side: sidePrimary)
             
