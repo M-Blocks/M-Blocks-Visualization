@@ -20,7 +20,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
     
     var data : NSMutableData = NSMutableData()
     
-    let urlPath: String = "http://mitmblocks.com/service.php"
+    let urlPath: String = "http://mitmblocks.com/new_service.php"
     
     
     func downloadItems() {
@@ -74,7 +74,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
             
             //the following insures none of the JsonElement values are nil through optional binding
             if  let blockNumber = jsonElement["blockNumber"] as? String,
-                let faceUp = Int((jsonElement["faceUp"] as? String)!),
+                let upFace = Int((jsonElement["upFace"] as? String)!),
                 let cOne = jsonElement["cOne"] as? String,
                 let cTwo = jsonElement["cTwo"] as? String,
                 let cThree = jsonElement["cThree"] as? String,
@@ -83,7 +83,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 let cSix = jsonElement["cSix"] as? String
             {
                 block.blockNumber = blockNumber
-                block.faceUp = faceUp
+                block.upFace = upFace
                 block.cOne = cOne
                 block.cTwo = cTwo
                 block.cThree = cThree
@@ -92,17 +92,13 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 block.cSix = cSix
                 block.setXZOri()
                 
-                let extras = ["color", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
+                let extras = ["lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
                 
                 for e in extras {
                     if (jsonElement[e] as? String) != nil {
                         block.setValue(jsonElement[e] as? String, forKey: e)
                     } else {
-                        if e == "color" {
-                            block.color = "green"
-                        } else {
-                            block.setValue("64", forKey: e)
-                        }
+                        block.setValue("64", forKey: e)
                     }
                 }
                 

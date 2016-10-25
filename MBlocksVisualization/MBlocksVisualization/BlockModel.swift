@@ -21,7 +21,7 @@ class BlockModel: NSObject {
     var yOri: Double = 0.0
     var zOri: Double = 0.0
     var color: String?
-    var faceUp: Int?
+    var upFace: Int = 1
     var cOne: String?
     var cTwo: String?
     var cThree: String?
@@ -43,9 +43,9 @@ class BlockModel: NSObject {
     }
     // fix
     //construct with all parameters
-    init(blockNumber: String, faceUp: Int, cOne: String, cTwo: String, cThree: String, cFour: String, cFive: String, cSix: String, lOne: String, lTwo: String, lThree: String, lFour: String, lFive: String, lSix: String, color: String) {
+    init(blockNumber: String, upFace: Int, cOne: String, cTwo: String, cThree: String, cFour: String, cFive: String, cSix: String, lOne: String, lTwo: String, lThree: String, lFour: String, lFive: String, lSix: String, color: String) {
         self.blockNumber = blockNumber
-        self.faceUp = faceUp
+        self.upFace = upFace
         self.cOne = cOne
     }
     init(blockNumber: String, xPos: Double, yPos: Double, zPos: Double, xOri: Double, yOri: Double, zOri: Double, color: String) {
@@ -56,7 +56,6 @@ class BlockModel: NSObject {
         self.xOri = xOri
         self.yOri = yOri
         self.zOri = zOri
-        self.color = color
     }
     
     func setNode(node: SCNNode) {
@@ -79,22 +78,22 @@ class BlockModel: NSObject {
     
     // FIX THE NUMBERS
     func setXZOri() {
-        if self.faceUp == 1 {
+        if self.upFace == 1 {
             self.xOri = 270.degreesToRadians
-        } else if self.faceUp == 2 {
+        } else if self.upFace == 2 {
             self.zOri = 90.degreesToRadians
-        } else if self.faceUp == 3 {
+        } else if self.upFace == 3 {
             self.xOri = 90.degreesToRadians
-        } else if self.faceUp == 4 {
+        } else if self.upFace == 4 {
             self.zOri = 270.degreesToRadians
-        } else if self.faceUp == 5 {
-        } else if self.faceUp == 6 {
+        } else if self.upFace == 5 {
+        } else if self.upFace == 6 {
             self.xOri = 180.degreesToRadians
         }
     }
     
     func getDirFacing(side: Int) -> String {
-        if side == faceUp {
+        if side == upFace {
             return "posY"
         } else if side == faceDown() {
             return "negY"
@@ -115,7 +114,7 @@ class BlockModel: NSObject {
     /* PROB NOT USEFUL -> DELETE */
     func turnToFace(side: Int, dir: String) {
         if side == 1 {
-            if faceUp == 2 {
+            if upFace == 2 {
                 if dir == "posX" {
                     self.xOri = 0
                     self.yOri = 180.degreesToRadians
@@ -134,15 +133,15 @@ class BlockModel: NSObject {
     }
     
     func faceDown() -> Int {
-        if faceUp == 1 {
+        if upFace == 1 {
             return 3
-        } else if faceUp == 2 {
+        } else if upFace == 2 {
             return 4
-        } else if faceUp == 3 {
+        } else if upFace == 3 {
             return 1
-        }  else if faceUp == 4 {
+        }  else if upFace == 4 {
             return 2
-        } else if faceUp == 5 {
+        } else if upFace == 5 {
             return 6
         } else {
             return 5
@@ -150,15 +149,15 @@ class BlockModel: NSObject {
     }
     
     func relativeSideFaces() -> [Int] {
-        if self.faceUp == 1 {
+        if self.upFace == 1 {
             return [6,2,5,4]
-        } else if self.faceUp == 2 {
+        } else if self.upFace == 2 {
             return [1,6,3,5]
-        } else if self.faceUp == 3 {
+        } else if self.upFace == 3 {
             return [5,2,6,4]
-        } else if self.faceUp == 4 {
+        } else if self.upFace == 4 {
             return [1,5,3,6]
-        } else if self.faceUp == 5 {
+        } else if self.upFace == 5 {
             return [1,2,3,4]
         } else {
             return [1,4,3,2]
