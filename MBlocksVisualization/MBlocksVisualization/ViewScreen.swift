@@ -133,7 +133,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     func handleTouchFor(node: SCNNode) {
 
         let box = blockModels[node.name!]!
-        print("You touched: \(box.blockNumber), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
+        print("You touched: \(box.blockNumber!), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
+        print("Fully positioned: \(box.located)")
         //sendMyRequest(box)
         //print(blockModels)
         
@@ -150,7 +151,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                 handleTouchFor(node: result.node)
                 
                 let material = result.node.geometry!.materials[result.geometryIndex]
-                print("Side touched: \(material.name)")
+                print("Side touched: \(material.name!)")
             }
             
         }
@@ -369,7 +370,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             hue = CGFloat(1.0)
         }
         old.sceneNode?.position = SCNVector3(x: Float(old.xPos), y: Float(old.yPos), z: Float(old.zPos))
-        
+        old.sceneNode?.eulerAngles = SCNVector3(x: Float(old.xOri), y: Float(old.yOri), z: Float(old.zOri))
     }
     
     func checkCamera() {

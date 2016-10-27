@@ -46,11 +46,35 @@ class PositionCalculator: NSObject {
             
             
             let sides = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
-            
+            var guessAvailable = false
+            var guessList = [String: Any]()
             for side in sides {
                 let x = (block.value(forKey: side) as! String)
                 if  x != "" {
+                    
                     let info = x.components(separatedBy: "-")
+                    
+                    // if this is null(because the cube was turned off), then the connection should be deleted
+                    if let connected = blocks[info[0]] {
+                        let thisSide = getSideNum(side: side)
+                        let thatSide = Int(info[1])!
+                        if (thatSide == connected.faceDown()) || (thatSide == connected.upFace) {
+                            guessAvailable = true
+                            guessList["rel"] = connected
+                            guessList["a"] = thisSide
+                            guessList["b"] = thatSide
+                            continue
+                        }
+                        if connected.located == true {
+                            locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
+                            //print("should immediately break")
+                            break
+                        }
+                    } else {
+                        block.setValue("", forKey: side)
+                        continue
+                    }
+                    /* old code
                     let connected = blocks[info[0]]!
                     let thisSide = getSideNum(side: side)
                     let thatSide = Int(info[1])!
@@ -58,9 +82,14 @@ class PositionCalculator: NSObject {
                         locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
                         //print("should immediately break")
                         break
-                    }
+                    }*/
                 }
                 //print("still looping")
+                if side == "cSix" {
+                    if guessAvailable {
+                        locate(block: block, relativeTo: guessList["rel"] as! BlockModel, a: guessList["a"] as! Int, b: guessList["b"] as! Int)
+                    }
+                }
             }
             //print("break")
             
@@ -83,6 +112,8 @@ class PositionCalculator: NSObject {
         block.zPos = relativeTo.zPos
         
         if (b != relativeTo.upFace) && (b != relativeTo.faceDown()) {
+            //print("b is \(b)")
+            //print("a is \(a)")
             // FIX MIGHT BE FLIPPED
             //print(block.relativeSideFaces())
             //print(relativeTo.relativeSideFaces())
@@ -91,8 +122,11 @@ class PositionCalculator: NSObject {
             //print(firstIndex)
             //print(secondIndex)
             
-            let turn = rotations[firstIndex!]?[secondIndex!].degreesToRadians
-            
+            let turn = rotations[firstIndex! + 1]?[secondIndex!].degreesToRadians
+            /*print(rotations[firstIndex!]?[secondIndex!])
+            print("first index \(firstIndex!)")
+            print("second index \(secondIndex!)")
+            print("turn is \(turn)")*/
             block.yOri = (relativeTo.yOri + turn!) - (((relativeTo.yOri + turn!) / 360.degreesToRadians)*360.degreesToRadians)
 
         }
@@ -120,9 +154,9 @@ class PositionCalculator: NSObject {
             //block.turnToFace(side: a, dir: "posZ")
         }
         
-        block.located = true
-        
-        
+        if (b != relativeTo.upFace) && (b != relativeTo.faceDown()) {
+            block.located = true
+        }
     }
     
     
@@ -170,6 +204,22 @@ class PositionCalculator: NSObject {
             return 5
         } else { //side == "cSix" {
             return 6
+        }
+    }
+    
+    func getSideName(side: Int) -> String {
+        if side == 1 {
+            return "cOne"
+        } else if side == 2 {
+            return "cTwo"
+        } else if side == 3 {
+            return "cThree"
+        } else if side == 4 {
+            return "cFour"
+        } else if side == 5 {
+            return "cFive"
+        } else { //side == "cSix" {
+            return "cSix"
         }
     }
 }
