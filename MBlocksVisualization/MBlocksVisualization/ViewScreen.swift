@@ -75,7 +75,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     
     func timerActions() {
         mainTimerSeconds += 1 /// keeps track of time
-        
         downloadData() // downloads cube data
     }
 
@@ -105,7 +104,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         scnScene.rootNode.addChildNode(cameraNode)
     }
     
-    // FIX
     // Used to delete unnecessary objects
     func cleanScene() {
         for node in scnScene.rootNode.childNodes {
@@ -129,30 +127,33 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         
     }
     
-    // FIX
     // Handles what happens when a block is touched
     func handleTouchFor(node: SCNNode, sideName: String) {
-
         let box = blockModels[node.name!]!
-        print("You touched: \(box.blockNumber!), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
+        print("You touched: Block \(box.blockNumber!)(\(box.xPos),\(box.yPos),\(box.zPos)) on side \(sideName)")
         print("Fully positioned: \(box.located)")
-        print("Side touched: \(sideName)")
         
         if firstTouch == "" {
             firstTouch = box.blockNumber!
+            box.highlight()
         } else {
-            if box.located == true {
-                let side = getSideNum(side: sideName)
-                //print(getNeighboringPos(block: box, side: side))
-                sendMyRequest(blockModels[firstTouch]!, pos: getNeighboringPos(block: box, side: side))
+            if box.blockNumber! == firstTouch {
                 firstTouch = ""
+                box.highlight(false)
             } else {
-                print("Can't use this side because it's position isn't completely constrained")
+                if box.located == true {
+                    let side = getSideNum(side: sideName)
+                    let first = blockModels[firstTouch]!
+                    //print(getNeighboringPos(block: box, side: side))
+                    sendMyRequest(first, pos: getNeighboringPos(block: box, side: side))
+                    first.highlight(false)
+                    firstTouch = ""
+                    
+                } else {
+                    print("Can't use this side because it's position isn't completely constrained")
+                }
             }
         }
-        //sendMyRequest(box)
-        //print(blockModels)
-        
     }
     
     // Finds out what block is touched and calls the function that deals with it
@@ -160,17 +161,13 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         let touch = touches.first!
         let location = touch.location(in: scnView)
         let hitResults = scnView.hitTest(location, options: nil)
+        
         if hitResults.count > 0 {
             let result = hitResults.first!
             if result.node.name != nil {
                 let material = result.node.geometry!.materials[result.geometryIndex]
-                
                 handleTouchFor(node: result.node, sideName: material.name!)
-                
-                
-                
             }
-            
         }
     }
     
@@ -181,6 +178,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         homeModel.delegate = self
         homeModel.downloadItems()
     }
+    
     func itemsDownloaded(_ items: NSArray) {
         feedItems = items
         BlockNumberLabel.text = "Blocks Avalaible: \(feedItems.count)"
@@ -188,28 +186,16 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             posCalc = PositionCalculator(list: items as! [BlockModel])
         }
     }
-    // Sends updated Block data to the database
+    
+    // Sends commands to datbase
     func sendMyRequest(_ block: BlockModel, pos: [Double]) {
-        print("sending a request to move block \(block.blockNumber) to \(pos)")
+        print("Sending a request to move block \(block.blockNumber) to \(pos)")
         
         let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
-        
-        /*var color = "white"
-        if block.color == "green" {
-            color = "red"
-        } else {
-            color = "green"
-        }
-        //FIX currently is sending color for color, but color should be sent for colorGoal, the
-        // cube should then change it's color to colorGoal and it should edit the color in the database
-        let urlWithParams = scriptUrl + "?cubeNumber=\(block.blockNumber!)&xPos=\(block.xPos)&yPos=\(block.yPos)&zPos=\(block.zPos)&xOri=\(block.xOri)&yOri=\(block.yOri)&zOri=\(block.zOri)&color=\(color)&colorGoal=\(color)"*/
-        
         let urlWithParams = scriptUrl + "?blockNumber=\(block.blockNumber!)&xPos=\(pos[0])&yPos=\(pos[1])&zPos=\(pos[2])&color=\(block.color)"
-        
         print(urlWithParams)
         
         let myUrl = URL(string: urlWithParams);
-        
         let task = URLSession.shared.dataTask(with: myUrl!) { data, response, error in
             guard error == nil else {
                 print(error)
@@ -220,7 +206,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                 return
             }
         }
-        
         task.resume()
     }
     
@@ -235,16 +220,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             let oldCube = blockModels[cubeNum]
             
             if oldCube != nil {
-                /* first need to check if that blockModel even exists) */
-                /* PROBABLY NEVER NEEDS RE RENDERING JUST TRANSLATION */
-                /*if needsReRendering(old: oldCube!, new: b) {
-                    print("Update old cube")
-                    oldCube!.sceneNode?.removeFromParentNode()
-                    addBlock(block: b, blockNum: cubeNum)
-                } else {
-                    
-                }*/
-                if needsReRendering(old: oldCube!, new: b) { // FIX: actually checking if needs update, not if needs rerendering
+                if needsUpdate(old: oldCube!, new: b) {
                     updateBlock(old: oldCube!, new: b)
                 }
             } else {
@@ -253,28 +229,18 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             }
             
         }
-        //print(totalRenders)
-        
     }
     
     func setupBase() {
         var geometry:SCNGeometry
         geometry = SCNBox(width: 20.0, height: 1.0, length: 20.0, chamferRadius: 0.0)
-        
         let color = UIColor.lightGray
-        
         geometry.materials.first?.diffuse.contents = color
-        
         let geometryNode = SCNNode(geometry: geometry)
         geometryNode.position = SCNVector3(x: 0, y: -1, z: 0)
-        
         geometryNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-        
         scnScene.rootNode.addChildNode(geometryNode)
-        
-        
         /*
-        // new try
         let myFloor = SCNFloor()
         let myFloorNode = SCNNode(geometry: myFloor)
         myFloorNode.position = SCNVector3(x: 0, y: -0.5, z: 0)
@@ -283,9 +249,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         myFloor.reflectionFalloffStart = 2.0
         myFloor.reflectionFalloffEnd = 10.0
         scnScene.rootNode.addChildNode(myFloorNode)
-        //
          */
-        
         baseInitiated = true
     }
     
@@ -342,11 +306,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     }
     
     // Determines if a block needs to be moved/rerendered (aka if its data has changed)
-    func needsReRendering(old: BlockModel, new: BlockModel) -> Bool {
-        
+    func needsUpdate(old: BlockModel, new: BlockModel) -> Bool {
         let strs = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
         let ints = ["upFace", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
-        
         for v in strs {
             if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
                 print("\(v) is outdated. Translation/Rotation needed. ")
@@ -365,29 +327,12 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     // FIX, MAKE SURE TO UPDATE SIDE LIGHTING
     func updateBlock(old: BlockModel, new: BlockModel) {
         let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
-        
         for v in variables {
             old.setValue(new.value(forKey: v), forKey: v)
         }
         old.setXZOri()
         old.located = false
-        
         posCalc?.position(block: old)
-        print("positioning \(old)")
-        /*for v in variables {
-            if ["xPos", "yPos", "zPos"].contains(v) {
-         
-                if abs(Float((old.value(forKey: v) as! String))! - Float((new.value(forKey: v) as! String))!) < 0.01 {
-                    old.setValue((new.value(forKey: v) as! String), forKey: v)
-                } else {
-                    let deltaX = 0.15 * (Float((new.value(forKey: v) as! String))! - Float((old.value(forKey: v) as! String))!)
-                    let newX = Float(old.value(forKey: v) as! String)! + deltaX
-                    old.setValue(String(newX), forKey: v)
-                }
-            } else {
-                old.setValue((new.value(forKey: v) as! String), forKey: v)
-            }
-        }*/
         let mat = old.sceneNode?.geometry!.materials
         
         /*mat?[0].diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(old.lOne)/Float(128.0)), alpha: 1.0)
@@ -457,7 +402,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         } else {
             block.sceneNode?.rotation = SCNVector4(0,1,0, pq + 45.degreesToRadians)
         }
-        
     }
     
     func getNeighboringPos(block: BlockModel, side: Int) -> [Double] {
@@ -477,6 +421,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             return [block.xPos, block.yPos, block.zPos - 1.0]
         }
     }
+    
     func getSideNum(side: String) -> Int {
         if side == "sideOne" {
             return 1
@@ -492,9 +437,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             return 6
         }
     }
-
-    
-    
 }
 
 extension ViewScreen: SCNSceneRendererDelegate {

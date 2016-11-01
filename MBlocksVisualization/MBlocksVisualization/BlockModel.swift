@@ -35,6 +35,7 @@ class BlockModel: NSObject {
     var lFive: Int = 0
     var lSix: Int = 0
     var located = false
+    var highlighted = false
     
     var sceneNode: SCNNode?
     
@@ -172,6 +173,29 @@ class BlockModel: NSObject {
             return [1,2,3,4]
         } else {
             return [1,4,3,2]
+        }
+    }
+    
+    func highlight(_ light: Bool = true) {
+        let mat = self.sceneNode?.geometry!.materials
+        if light {
+            self.highlighted = true
+            
+            mat?[0].diffuse.contents = UIColor(hue: 0.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
+            mat?[1].diffuse.contents = UIColor(hue: 0.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
+            mat?[2].diffuse.contents = UIColor(hue: 0.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
+            mat?[3].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
+            mat?[4].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
+            mat?[5].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
+        } else {
+            self.highlighted = false
+            
+            mat?[0].diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(self.lOne)/Float(128.0)), alpha: 1.0)
+            mat?[1].diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(self.lTwo)/Float(128.0)), alpha: 1.0)
+            mat?[2].diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(self.lThree)/Float(128.0)), alpha: 1.0)
+            mat?[3].diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(self.lFour)/Float(128.0)), alpha: 1.0)
+            mat?[4].diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(self.lFive)/Float(128.0)), alpha: 1.0)
+            mat?[5].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(self.lSix)/Float(128.0)), alpha: 1.0)
         }
     }
     
