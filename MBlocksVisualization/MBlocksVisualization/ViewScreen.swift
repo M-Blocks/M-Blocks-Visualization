@@ -23,6 +23,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     var totalRenders = 0
     var baseInitiated: Bool = false
     var posCalc: PositionCalculator?
+    var firstTouch = ""
     
     // NETWORKING
     var feedItems: NSArray = NSArray()
@@ -130,11 +131,21 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     
     // FIX
     // Handles what happens when a block is touched
-    func handleTouchFor(node: SCNNode) {
+    func handleTouchFor(node: SCNNode, sideName: String) {
 
         let box = blockModels[node.name!]!
         print("You touched: \(box.blockNumber!), x: \(box.xPos), y: \(box.yPos), z: \(box.zPos)")
         print("Fully positioned: \(box.located)")
+        print("Side touched: \(sideName)")
+        
+        if firstTouch == "" {
+            firstTouch = box.blockNumber!
+        } else {
+            let side = getSideNum(side: sideName)
+            //print(getNeighboringPos(block: box, side: side))
+            sendMyRequest(blockModels[firstTouch]!, pos: getNeighboringPos(block: box, side: side))
+            firstTouch = ""
+        }
         //sendMyRequest(box)
         //print(blockModels)
         
@@ -148,10 +159,12 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         if hitResults.count > 0 {
             let result = hitResults.first!
             if result.node.name != nil {
-                handleTouchFor(node: result.node)
-                
                 let material = result.node.geometry!.materials[result.geometryIndex]
-                print("Side touched: \(material.name!)")
+                
+                handleTouchFor(node: result.node, sideName: material.name!)
+                
+                
+                
             }
             
         }
@@ -172,12 +185,12 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         }
     }
     // Sends updated Block data to the database
-    func sendMyRequest(_ block: BlockModel) {
-        print("sending a reqeust")
+    func sendMyRequest(_ block: BlockModel, pos: [Double]) {
+        print("sending a request to move block \(block.blockNumber) to \(pos)")
         
-        let scriptUrl = "http://mitmblocks.com/database_editor.php"
+        let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
         
-        var color = "white"
+        /*var color = "white"
         if block.color == "green" {
             color = "red"
         } else {
@@ -185,7 +198,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         }
         //FIX currently is sending color for color, but color should be sent for colorGoal, the
         // cube should then change it's color to colorGoal and it should edit the color in the database
-        let urlWithParams = scriptUrl + "?cubeNumber=\(block.blockNumber!)&xPos=\(block.xPos)&yPos=\(block.yPos)&zPos=\(block.zPos)&xOri=\(block.xOri)&yOri=\(block.yOri)&zOri=\(block.zOri)&color=\(color)&colorGoal=\(color)"
+        let urlWithParams = scriptUrl + "?cubeNumber=\(block.blockNumber!)&xPos=\(block.xPos)&yPos=\(block.yPos)&zPos=\(block.zPos)&xOri=\(block.xOri)&yOri=\(block.yOri)&zOri=\(block.zOri)&color=\(color)&colorGoal=\(color)"*/
+        
+        let urlWithParams = scriptUrl + "?blockNumber=\(block.blockNumber!)&xPos=\(pos[0])&yPos=\(pos[1])&zPos=\(pos[2])&color=\(block.color)"
         
         print(urlWithParams)
         
@@ -440,6 +455,41 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         }
         
     }
+    
+    func getNeighboringPos(block: BlockModel, side: Int) -> [Double] {
+        let s = block.getDirFacing(side: side)
+        print(s)
+        if s == "posY" {
+            return [block.xPos, block.yPos + 1.0, block.zPos]
+        } else if s == "negY" {
+            return [block.xPos, block.yPos - 1.0, block.zPos]
+        } else if s == "negX" {
+            return [block.xPos - 1.0, block.yPos, block.zPos]
+        } else if s == "posX" {
+            return [block.xPos + 1.0, block.yPos, block.zPos]
+        } else if s == "posZ" {
+            return [block.xPos, block.yPos, block.zPos + 1.0]
+        } else { //"negZ"
+            return [block.xPos, block.yPos, block.zPos - 1.0]
+        }
+    }
+    func getSideNum(side: String) -> Int {
+        if side == "sideOne" {
+            return 1
+        } else if side == "sideTwo" {
+            return 2
+        } else if side == "sideThree" {
+            return 3
+        } else if side == "sideFour" {
+            return 4
+        } else if side == "sideFive" {
+            return 5
+        } else { //side == "cSix" {
+            return 6
+        }
+    }
+
+    
     
 }
 

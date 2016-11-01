@@ -147,6 +147,11 @@ class PositionCalculator: NSObject {
         
         
         let facing = relativeTo.getDirFacing(side: b)
+        print("DEBUG")
+        print("Block Nubmer: \(relativeTo.blockNumber!)")
+        print("Side: \(b)")
+        print("Facing: \(facing)")
+        print("END DEBUG")
         
         if facing == "posX" {
             block.xPos = block.xPos + 1.0
@@ -223,7 +228,6 @@ class PositionCalculator: NSObject {
             return 6
         }
     }
-    
     func getSideName(side: Int) -> String {
         if side == 1 {
             return "cOne"

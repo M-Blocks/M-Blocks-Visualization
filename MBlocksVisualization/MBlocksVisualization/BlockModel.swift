@@ -20,7 +20,7 @@ class BlockModel: NSObject {
     var xOri: Double = 0.0
     var yOri: Double = 0.0
     var zOri: Double = 0.0
-    var color: String?
+    var color: String = "green"
     var upFace: Int = 1
     var cOne: String?
     var cTwo: String?
