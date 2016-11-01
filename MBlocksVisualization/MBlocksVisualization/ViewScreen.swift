@@ -141,10 +141,14 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         if firstTouch == "" {
             firstTouch = box.blockNumber!
         } else {
-            let side = getSideNum(side: sideName)
-            //print(getNeighboringPos(block: box, side: side))
-            sendMyRequest(blockModels[firstTouch]!, pos: getNeighboringPos(block: box, side: side))
-            firstTouch = ""
+            if box.located == true {
+                let side = getSideNum(side: sideName)
+                //print(getNeighboringPos(block: box, side: side))
+                sendMyRequest(blockModels[firstTouch]!, pos: getNeighboringPos(block: box, side: side))
+                firstTouch = ""
+            } else {
+                print("Can't use this side because it's position isn't completely constrained")
+            }
         }
         //sendMyRequest(box)
         //print(blockModels)
