@@ -28,12 +28,12 @@ class BlockModel: NSObject {
     var cFour: String?
     var cFive: String?
     var cSix: String?
-    var lOne: String?
-    var lTwo: String?
-    var lThree: String?
-    var lFour: String?
-    var lFive: String?
-    var lSix: String?
+    var lOne: Int = 0
+    var lTwo: Int = 0
+    var lThree: Int = 0
+    var lFour: Int = 0
+    var lFive: Int = 0
+    var lSix: Int = 0
     var located = false
     
     var sceneNode: SCNNode?
@@ -78,6 +78,7 @@ class BlockModel: NSObject {
     
     // FIX THE NUMBERS
     func setXZOri() {
+        resetOri()
         if self.upFace == 1 {
             self.xOri = 270.degreesToRadians
         } else if self.upFace == 2 {
@@ -90,6 +91,16 @@ class BlockModel: NSObject {
         } else if self.upFace == 6 {
             self.xOri = 180.degreesToRadians
         }
+        
+        if sceneNode != nil {
+            sceneNode?.eulerAngles = SCNVector3(x: Float(self.xOri), y: Float(self.yOri), z: Float(self.zOri))
+        }
+    }
+    
+    func resetOri() {
+        self.xOri = 0
+        self.yOri = 0
+        self.zOri = 0
     }
     
     func getDirFacing(side: Int) -> String {

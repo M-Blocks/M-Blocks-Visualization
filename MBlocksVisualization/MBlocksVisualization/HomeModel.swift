@@ -96,9 +96,9 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 
                 for e in extras {
                     if (jsonElement[e] as? String) != nil {
-                        block.setValue(jsonElement[e] as? String, forKey: e)
+                        block.setValue(Int(jsonElement[e] as! String), forKey: e)
                     } else {
-                        block.setValue("64", forKey: e)
+                        block.setValue(64, forKey: e)
                     }
                 }
                 

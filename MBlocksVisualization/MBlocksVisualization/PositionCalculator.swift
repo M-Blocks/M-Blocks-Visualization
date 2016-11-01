@@ -29,6 +29,14 @@ class PositionCalculator: NSObject {
         }
     }
     
+    func setList(list: [BlockModel]) {
+        for x in list {
+            blocks[x.blockNumber!] = x
+            if first == nil {
+                first = x
+            }
+        }
+    }
     
     func position(block: BlockModel) {
         if !setBase {
@@ -53,12 +61,13 @@ class PositionCalculator: NSObject {
                 if  x != "" {
                     
                     let info = x.components(separatedBy: "-")
-                    
+                    print(info)
                     // if this is null(because the cube was turned off), then the connection should be deleted
                     if let connected = blocks[info[0]] {
                         let thisSide = getSideNum(side: side)
                         let thatSide = Int(info[1])!
                         if (thatSide == connected.faceDown()) || (thatSide == connected.upFace) {
+                            print("setting as guess")
                             guessAvailable = true
                             guessList["rel"] = connected
                             guessList["a"] = thisSide
@@ -67,10 +76,15 @@ class PositionCalculator: NSObject {
                         }
                         if connected.located == true {
                             locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
-                            //print("should immediately break")
+                            print("should immediately break")
                             break
+                        } else {
+                            print("connected cube is not located")
+                            print(connected.located)
+                            print(blocks["7"]!.located)
                         }
                     } else {
+                        print("Didn't find cube this was connected to")
                         block.setValue("", forKey: side)
                         continue
                     }
@@ -84,14 +98,14 @@ class PositionCalculator: NSObject {
                         break
                     }*/
                 }
-                //print("still looping")
+                print("still looping")
                 if side == "cSix" {
                     if guessAvailable {
                         locate(block: block, relativeTo: guessList["rel"] as! BlockModel, a: guessList["a"] as! Int, b: guessList["b"] as! Int)
                     }
                 }
             }
-            //print("break")
+            print("break")
             
             
             // CONTINUE IN THIS PLACE SOMWHERE ABOVE THIS
@@ -156,6 +170,9 @@ class PositionCalculator: NSObject {
         
         if (b != relativeTo.upFace) && (b != relativeTo.faceDown()) {
             block.located = true
+            print("Block \(block.blockNumber) located and oriented")
+        } else {
+            print("Block \(block.blockNumber) located but not oriented")
         }
     }
     

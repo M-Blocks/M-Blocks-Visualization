@@ -271,6 +271,8 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     }
     
     func addBlock(block: BlockModel, blockNum: String) {
+        
+        posCalc?.position(block: block)
         blockModels.updateValue(block, forKey: blockNum)
         
         var geometry:SCNGeometry
@@ -292,28 +294,29 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         geometryNode.name = block.blockNumber
         
         let sideOne = SCNMaterial()
-        sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(block.lOne!)!/Float(128.0)), alpha: 1.0)
+        sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(block.lOne)/Float(128.0)), alpha: 1.0)
         sideOne.name = "sideOne"
         let sideTwo = SCNMaterial()
-        sideTwo.diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(block.lTwo!)!/Float(128.0)), alpha: 1.0)
+        sideTwo.diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(block.lTwo)/Float(128.0)), alpha: 1.0)
         sideTwo.name = "sideTwo"
         let sideThree = SCNMaterial()
-        sideThree.diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(block.lThree!)!/Float(128.0)), alpha: 1.0)
+        sideThree.diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(block.lThree)/Float(128.0)), alpha: 1.0)
         sideThree.name = "sideThree"
         let sideFour = SCNMaterial()
-        sideFour.diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(block.lFour!)!/Float(128.0)), alpha: 1.0)
+        sideFour.diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(block.lFour)/Float(128.0)), alpha: 1.0)
         sideFour.name = "sidefour"
         let sideFive = SCNMaterial()
-        sideFive.diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(block.lFive!)!/Float(128.0)), alpha: 1.0)
+        sideFive.diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(block.lFive)/Float(128.0)), alpha: 1.0)
         sideFive.name = "sideFive"
         let sideSix = SCNMaterial()
-        sideSix.diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(block.lSix!)!/Float(128.0)), alpha: 1.0)
+        sideSix.diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(block.lSix)/Float(128.0)), alpha: 1.0)
         sideSix.name = "sideSix"
         geometry.materials = [sideOne, sideTwo, sideThree, sideFour, sideFive, sideSix]
         
         geometryNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
         
-        
+        geometryNode.position = SCNVector3(x: Float(block.xPos), y: Float(block.yPos), z: Float(block.zPos))
+        geometryNode.eulerAngles = SCNVector3(x: Float(block.xOri), y: Float(block.yOri), z: Float(block.zOri))
         scnScene.rootNode.addChildNode(geometryNode)
         totalRenders = totalRenders+1
         block.setNode(node: geometryNode)
@@ -321,33 +324,37 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     
     // Determines if a block needs to be moved/rerendered (aka if its data has changed)
     func needsReRendering(old: BlockModel, new: BlockModel) -> Bool {
-        /*let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         
-        for v in variables {
-            if Array(v)[0] == "c" {
-                if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
-                    print("\(v) is outdated. ReRendering/Translation needed.")
-                    return true
-                }
-            } else {
-                if old.value(forKey: v) != new.value(forKey: v) {
-                    print("\(v) is outdated. ReRendering/Translation needed.")
-                    return true
-                }
+        let strs = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
+        let ints = ["upFace", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
+        
+        for v in strs {
+            if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
+                print("\(v) is outdated. Translation/Rotation needed. ")
+                return true
             }
-            
         }
-        return false*/
-        return true
+        for v in ints {
+            if (old.value(forKey: v) as! Int) != (new.value(forKey: v) as! Int) {
+                print("\(v) is outdated. Translation/Rotation/ReRendering needed.")
+                return true
+            }
+        }
+        return false
     }
     
+    // FIX, MAKE SURE TO UPDATE SIDE LIGHTING
     func updateBlock(old: BlockModel, new: BlockModel) {
         let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         
         for v in variables {
             old.setValue(new.value(forKey: v), forKey: v)
         }
+        old.setXZOri()
+        old.located = false
+        
         posCalc?.position(block: old)
+        print("positioning \(old)")
         /*for v in variables {
             if ["xPos", "yPos", "zPos"].contains(v) {
          
@@ -362,6 +369,14 @@ class ViewScreen: UIViewController, HomeModelProtocal {
                 old.setValue((new.value(forKey: v) as! String), forKey: v)
             }
         }*/
+        let mat = old.sceneNode?.geometry!.materials
+        
+        /*mat?[0].diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(old.lOne)/Float(128.0)), alpha: 1.0)
+        mat?[1].diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(old.lTwo)/Float(128.0)), alpha: 1.0)
+        mat?[2].diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(old.lThree)/Float(128.0)), alpha: 1.0)
+        mat?[3].diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(old.lFour)/Float(128.0)), alpha: 1.0)
+        mat?[4].diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(old.lFive)/Float(128.0)), alpha: 1.0)
+        mat?[5].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(old.lSix)/Float(128.0)), alpha: 1.0)*/
         
         var hue = CGFloat(0.0)
         if old.color == "green" {
@@ -371,6 +386,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         }
         old.sceneNode?.position = SCNVector3(x: Float(old.xPos), y: Float(old.yPos), z: Float(old.zPos))
         old.sceneNode?.eulerAngles = SCNVector3(x: Float(old.xOri), y: Float(old.yOri), z: Float(old.zOri))
+        print(old.sceneNode?.position)
     }
     
     func checkCamera() {
