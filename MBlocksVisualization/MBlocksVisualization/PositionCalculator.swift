@@ -40,7 +40,6 @@ class PositionCalculator: NSObject {
     
     func position(block: BlockModel) {
         if !setBase {
-            
             block.xPos = 0.0
             block.yPos = 0.0
             block.zPos = 0.0
@@ -49,10 +48,7 @@ class PositionCalculator: NSObject {
             block.located = true
             setBase = true
             recursivelyLocateConnections(block: block)
-            
         } else {
-            
-            
             let sides = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
             var guessAvailable = false
             var guessList = [String: Any]()
@@ -76,7 +72,7 @@ class PositionCalculator: NSObject {
                         }
                         if connected.located == true {
                             locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
-                            print("should immediately break")
+                            //print("should immediately break")
                             break
                         } else {
                             print("connected cube is not located")
@@ -88,35 +84,15 @@ class PositionCalculator: NSObject {
                         block.setValue("", forKey: side)
                         continue
                     }
-                    /* old code
-                    let connected = blocks[info[0]]!
-                    let thisSide = getSideNum(side: side)
-                    let thatSide = Int(info[1])!
-                    if connected.located == true {
-                        locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
-                        //print("should immediately break")
-                        break
-                    }*/
                 }
-                print("still looping")
+                //print("still looping")
                 if side == "cSix" {
                     if guessAvailable {
                         locate(block: block, relativeTo: guessList["rel"] as! BlockModel, a: guessList["a"] as! Int, b: guessList["b"] as! Int)
                     }
                 }
             }
-            print("break")
-            
-            
-            // CONTINUE IN THIS PLACE SOMWHERE ABOVE THIS
-            // Check its neighbors
-            
-            // loop through neighbors
-            // If neighbor is located
-                // use it to locate X
-                //break
-            // Else
-                // don't do anything
+            //print("break")
         }
     }
     
@@ -147,11 +123,12 @@ class PositionCalculator: NSObject {
         
         
         let facing = relativeTo.getDirFacing(side: b)
-        print("DEBUG")
+        /*print("DEBUG")
         print("Block Nubmer: \(relativeTo.blockNumber!)")
         print("Side: \(b)")
         print("Facing: \(facing)")
         print("END DEBUG")
+        */
         
         if facing == "posX" {
             block.xPos = block.xPos + 1.0

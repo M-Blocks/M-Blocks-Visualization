@@ -19,12 +19,11 @@
 		3C30B1B71D9327D70005C2B7 /* ViewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */; };
 		3C30B1B91D9327E10005C2B7 /* BlockModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1B81D9327E10005C2B7 /* BlockModel.swift */; };
 		3C30B1BB1D9327E60005C2B7 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1BA1D9327E60005C2B7 /* HomeModel.swift */; };
-		3C30B1BD1D9327E90005C2B7 /* BlockNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1BC1D9327E90005C2B7 /* BlockNode.swift */; };
 		3C30B1BF1D9334670005C2B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C30B1BE1D9334670005C2B7 /* Main.storyboard */; };
-		3C5C5DC41D9C41E100BDEA93 /* MBlocksTitleLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C5C5DC31D9C41E100BDEA93 /* MBlocksTitleLogo.png */; };
 		3C5C5DC71D9C46CC00BDEA93 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C5C5DC61D9C46CC00BDEA93 /* MapKit.framework */; };
+		3C70DA9E1DCA6CAF006F8896 /* MBlocksTitleLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C70DA9D1DCA6CAF006F8896 /* MBlocksTitleLogo.png */; };
+		3C70DAA01DCA6E25006F8896 /* startbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C70DA9F1DCA6E25006F8896 /* startbutton.png */; };
 		3CB61DBA1D9C5107003DD550 /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CB61DB91D9C5107003DD550 /* blocks.png */; };
-		3CCA921C1DB7F6CB00F680D4 /* OldPositionCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA921B1DB7F6CB00F680D4 /* OldPositionCalculator.swift */; };
 		3CCA921E1DB97A2E00F680D4 /* PositionCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */; };
 		3CF82F7E1DB0103F00D38B2F /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF82F7D1DB0103F00D38B2F /* Numbers.swift */; };
 /* End PBXBuildFile section */
@@ -65,12 +64,11 @@
 		3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewScreen.swift; sourceTree = "<group>"; };
 		3C30B1B81D9327E10005C2B7 /* BlockModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockModel.swift; sourceTree = "<group>"; };
 		3C30B1BA1D9327E60005C2B7 /* HomeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
-		3C30B1BC1D9327E90005C2B7 /* BlockNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockNode.swift; sourceTree = "<group>"; };
 		3C30B1BE1D9334670005C2B7 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		3C5C5DC31D9C41E100BDEA93 /* MBlocksTitleLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBlocksTitleLogo.png; sourceTree = "<group>"; };
 		3C5C5DC61D9C46CC00BDEA93 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		3C70DA9D1DCA6CAF006F8896 /* MBlocksTitleLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBlocksTitleLogo.png; sourceTree = "<group>"; };
+		3C70DA9F1DCA6E25006F8896 /* startbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = startbutton.png; sourceTree = "<group>"; };
 		3CB61DB91D9C5107003DD550 /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blocks.png; sourceTree = "<group>"; };
-		3CCA921B1DB7F6CB00F680D4 /* OldPositionCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldPositionCalculator.swift; sourceTree = "<group>"; };
 		3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionCalculator.swift; sourceTree = "<group>"; };
 		3CF82F7D1DB0103F00D38B2F /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -137,8 +135,6 @@
 				3C30B18B1D9327830005C2B7 /* Info.plist */,
 				3C30B1B81D9327E10005C2B7 /* BlockModel.swift */,
 				3C30B1BA1D9327E60005C2B7 /* HomeModel.swift */,
-				3C30B1BC1D9327E90005C2B7 /* BlockNode.swift */,
-				3CCA921B1DB7F6CB00F680D4 /* OldPositionCalculator.swift */,
 				3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */,
 			);
 			path = MBlocksVisualization;
@@ -165,10 +161,11 @@
 		3C30B1B11D9327C90005C2B7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				3C5C5DC31D9C41E100BDEA93 /* MBlocksTitleLogo.png */,
+				3C70DA9D1DCA6CAF006F8896 /* MBlocksTitleLogo.png */,
 				3CB61DB91D9C5107003DD550 /* blocks.png */,
 				3C30B1B21D9327C90005C2B7 /* Background_Diffuse.png */,
 				3C30B1B31D9327C90005C2B7 /* MBlocksLogo.png */,
+				3C70DA9F1DCA6E25006F8896 /* startbutton.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -298,9 +295,10 @@
 				3C30B1BF1D9334670005C2B7 /* Main.storyboard in Resources */,
 				3C30B1871D9327830005C2B7 /* Assets.xcassets in Resources */,
 				3C30B1B51D9327C90005C2B7 /* MBlocksLogo.png in Resources */,
+				3C70DAA01DCA6E25006F8896 /* startbutton.png in Resources */,
 				3C30B1B41D9327C90005C2B7 /* Background_Diffuse.png in Resources */,
-				3C5C5DC41D9C41E100BDEA93 /* MBlocksTitleLogo.png in Resources */,
 				3CB61DBA1D9C5107003DD550 /* blocks.png in Resources */,
+				3C70DA9E1DCA6CAF006F8896 /* MBlocksTitleLogo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,10 +323,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CCA921C1DB7F6CB00F680D4 /* OldPositionCalculator.swift in Sources */,
 				3C30B1B01D9327B20005C2B7 /* MainScreen.swift in Sources */,
 				3C30B1B71D9327D70005C2B7 /* ViewScreen.swift in Sources */,
-				3C30B1BD1D9327E90005C2B7 /* BlockNode.swift in Sources */,
 				3C30B1BB1D9327E60005C2B7 /* HomeModel.swift in Sources */,
 				3CCA921E1DB97A2E00F680D4 /* PositionCalculator.swift in Sources */,
 				3CF82F7E1DB0103F00D38B2F /* Numbers.swift in Sources */,

@@ -38,10 +38,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="MBlocksTitleLogo.png" translatesAutoresizingMaskIntoConstraints="NO" id="lFX-GX-rma"/>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EwP-oU-EiB">
-                                <frame key="frameInset" minX="164" minY="492" width="46" height="30"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Start">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EwP-oU-EiB">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="UbU-0A-oFC"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="j2O-Ul-R2A"/>
+                                    <constraint firstAttribute="height" constant="75" id="zmZ-A2-Rc5"/>
+                                </constraints>
+                                <state key="normal" image="startbutton.png">
                                     <color key="titleColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
@@ -49,10 +52,11 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="0.64112747113017932" blue="0.26934099826838431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="EwP-oU-EiB" firstAttribute="top" secondItem="lFX-GX-rma" secondAttribute="bottom" constant="30" id="C8W-06-RNC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="lFX-GX-rma" secondAttribute="trailing" constant="20" id="ghc-Kq-E0n"/>
+                            <constraint firstItem="EwP-oU-EiB" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ua6-Zy-VVV"/>
                             <constraint firstItem="lFX-GX-rma" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="w1f-Vs-G1b"/>
                             <constraint firstItem="lFX-GX-rma" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="z91-KP-NTI"/>
                         </constraints>
@@ -84,7 +88,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="0.64112747110000001" blue="0.26934099830000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="cnQ-rL-Gaf" firstAttribute="top" secondItem="O4n-8e-Kz5" secondAttribute="top" constant="10" id="Eku-9m-bJI"/>
                                     <constraint firstAttribute="bottom" secondItem="qNl-0g-Ui5" secondAttribute="bottom" constant="8" id="INX-LA-kC5"/>
@@ -95,7 +99,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.75686274509999996" green="0.79215686269999996" blue="0.83921568629999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="hka-5P-RiZ" firstAttribute="leading" secondItem="icG-4M-GFb" secondAttribute="leadingMargin" id="6dP-M7-T8H"/>
                             <constraint firstItem="P0s-F3-Xn7" firstAttribute="top" secondItem="hka-5P-RiZ" secondAttribute="bottom" constant="20" id="8fC-e0-7s1"/>
@@ -117,6 +121,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="MBlocksTitleLogo.png" width="1081" height="259"/>
+        <image name="MBlocksTitleLogo.png" width="2534" height="499"/>
+        <image name="startbutton.png" width="345" height="104"/>
     </resources>
 </document>
