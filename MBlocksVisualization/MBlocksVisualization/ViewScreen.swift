@@ -9,8 +9,9 @@
 import UIKit
 import SceneKit
 
-class ViewScreen: UIViewController, HomeModelProtocal {
+class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
+    @IBOutlet weak var colView: UICollectionView!
     @IBOutlet weak var scnView: SCNView!
     @IBOutlet weak var BlockNumberLabel: UILabel!
     var scnScene: SCNScene!
@@ -44,6 +45,9 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         homeModel.delegate = self
         homeModel.downloadItems()
         
+        colView.delegate = self
+        colView.dataSource = self
+        
         // Sets up a 1 second timer that calls timerActions()
         mainTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(ViewScreen.timerActions), userInfo: nil, repeats: true)
     }
@@ -61,8 +65,6 @@ class ViewScreen: UIViewController, HomeModelProtocal {
     override var prefersStatusBarHidden: Bool {
         return true
     }
-    
-
     /*
     // MARK: - Navigation
 
@@ -80,7 +82,7 @@ class ViewScreen: UIViewController, HomeModelProtocal {
 
     // Sets up the options of the SceneView
     func setupView() {
-        scnView.showsStatistics = true
+        scnView.showsStatistics = false
         scnView.allowsCameraControl = true
         scnView.autoenablesDefaultLighting = true
         scnView.delegate = self
@@ -185,6 +187,10 @@ class ViewScreen: UIViewController, HomeModelProtocal {
         if posCalc == nil {
             posCalc = PositionCalculator(list: items as! [BlockModel])
         }
+    }
+    
+    func sendCommand(_ command: String) {
+        print("Block \(blockModels[firstTouch]) should \(command)")
     }
     
     // Sends commands to datbase
@@ -437,6 +443,26 @@ class ViewScreen: UIViewController, HomeModelProtocal {
             return 6
         }
     }
+    
+    
+    // COLLECTION ROW STUFF
+    let commands = ["Green", "Blue", "Red", "Flip", "Traverse", "Climb", "Jump", "Spin", "360"]
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return commands.count
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "commandCell", for: indexPath) as! CommandCell
+        cell.commandButton.setTitle(commands[indexPath.item], for: UIControlState.normal)
+        cell.delegate = self
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let itemsPerRow:CGFloat = 6
+        let hardCodedPadding:CGFloat = 5
+        let itemWidth = (collectionView.bounds.width / itemsPerRow) - hardCodedPadding
+        let itemHeight = collectionView.bounds.height - (2 * hardCodedPadding)
+        return CGSize(width: itemWidth, height: itemHeight)
+    }
 }
 
 extension ViewScreen: SCNSceneRendererDelegate {
@@ -447,8 +473,5 @@ extension ViewScreen: SCNSceneRendererDelegate {
         cleanScene()
     }
 }
-
-
-
 
 

@@ -26,6 +26,7 @@
 		3CB61DBA1D9C5107003DD550 /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CB61DB91D9C5107003DD550 /* blocks.png */; };
 		3CCA921E1DB97A2E00F680D4 /* PositionCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */; };
 		3CF82F7E1DB0103F00D38B2F /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF82F7D1DB0103F00D38B2F /* Numbers.swift */; };
+		3CFF6FCB1DCD2F85004AD132 /* CommandCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFF6FCA1DCD2F85004AD132 /* CommandCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		3CB61DB91D9C5107003DD550 /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blocks.png; sourceTree = "<group>"; };
 		3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionCalculator.swift; sourceTree = "<group>"; };
 		3CF82F7D1DB0103F00D38B2F /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
+		3CFF6FCA1DCD2F85004AD132 /* CommandCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				3C30B1861D9327830005C2B7 /* Assets.xcassets */,
 				3C30B1B11D9327C90005C2B7 /* Resources */,
 				3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */,
+				3CFF6FCA1DCD2F85004AD132 /* CommandCell.swift */,
 				3CF82F7D1DB0103F00D38B2F /* Numbers.swift */,
 				3C30B1881D9327830005C2B7 /* LaunchScreen.storyboard */,
 				3C30B18B1D9327830005C2B7 /* Info.plist */,
@@ -324,6 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C30B1B01D9327B20005C2B7 /* MainScreen.swift in Sources */,
+				3CFF6FCB1DCD2F85004AD132 /* CommandCell.swift in Sources */,
 				3C30B1B71D9327D70005C2B7 /* ViewScreen.swift in Sources */,
 				3C30B1BB1D9327E60005C2B7 /* HomeModel.swift in Sources */,
 				3CCA921E1DB97A2E00F680D4 /* PositionCalculator.swift in Sources */,

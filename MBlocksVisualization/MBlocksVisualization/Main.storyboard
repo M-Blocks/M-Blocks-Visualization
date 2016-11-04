@@ -98,20 +98,67 @@
                                     <constraint firstAttribute="height" constant="80" id="l3E-8K-NQq"/>
                                 </constraints>
                             </view>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pA2-9t-7HD">
+                                <color key="backgroundColor" red="1" green="0.64112747110000001" blue="0.26934099830000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Red-0F-vt9"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="5" id="MnM-TN-pim">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="5"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="commandCell" id="God-OE-OMd" customClass="CommandCell" customModule="MBlocksVisualization" customModuleProvider="target">
+                                        <rect key="frame" x="5" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T6M-Ku-h5c">
+                                                    <color key="backgroundColor" red="0.0" green="0.17385999999999999" blue="0.41532999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <state key="normal" title="Button">
+                                                        <color key="titleColor" red="0.040379999999999999" green="0.48322999999999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="sendCommand:" destination="God-OE-OMd" eventType="touchUpInside" id="4GO-5s-411"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </view>
+                                        <color key="backgroundColor" red="0.38888790719999999" green="0.69305344449999995" blue="0.81179687499999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="T6M-Ku-h5c" firstAttribute="leading" secondItem="God-OE-OMd" secondAttribute="leading" id="4Z6-LP-Fxn"/>
+                                            <constraint firstItem="T6M-Ku-h5c" firstAttribute="top" secondItem="God-OE-OMd" secondAttribute="top" id="apX-jA-gpa"/>
+                                            <constraint firstAttribute="trailing" secondItem="T6M-Ku-h5c" secondAttribute="trailing" id="p7R-Bb-cw2"/>
+                                            <constraint firstAttribute="bottom" secondItem="T6M-Ku-h5c" secondAttribute="bottom" id="t8x-dq-Mcq"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="commandButton" destination="T6M-Ku-h5c" id="CN0-lM-s4I"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="0.75686274509999996" green="0.79215686269999996" blue="0.83921568629999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="hka-5P-RiZ" firstAttribute="leading" secondItem="icG-4M-GFb" secondAttribute="leadingMargin" id="6dP-M7-T8H"/>
-                            <constraint firstItem="P0s-F3-Xn7" firstAttribute="top" secondItem="hka-5P-RiZ" secondAttribute="bottom" constant="20" id="8fC-e0-7s1"/>
+                            <constraint firstItem="P0s-F3-Xn7" firstAttribute="top" secondItem="hka-5P-RiZ" secondAttribute="bottom" constant="70" id="8fC-e0-7s1"/>
                             <constraint firstItem="hka-5P-RiZ" firstAttribute="top" secondItem="Kcu-WD-OYP" secondAttribute="bottom" constant="100" id="I9V-G0-PV2"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="pA2-9t-7HD" secondAttribute="trailing" id="UY6-U5-L5j"/>
+                            <constraint firstItem="P0s-F3-Xn7" firstAttribute="top" secondItem="pA2-9t-7HD" secondAttribute="bottom" constant="20" id="aPW-fg-W6w"/>
                             <constraint firstItem="O4n-8e-Kz5" firstAttribute="top" secondItem="icG-4M-GFb" secondAttribute="topMargin" id="bHi-E1-4Ju"/>
                             <constraint firstItem="O4n-8e-Kz5" firstAttribute="leading" secondItem="icG-4M-GFb" secondAttribute="leading" id="e52-PO-8qi"/>
+                            <constraint firstItem="pA2-9t-7HD" firstAttribute="leading" secondItem="icG-4M-GFb" secondAttribute="leadingMargin" id="ffR-GG-K5r"/>
                             <constraint firstAttribute="trailingMargin" secondItem="hka-5P-RiZ" secondAttribute="trailing" id="leh-o2-KdL"/>
                             <constraint firstAttribute="trailing" secondItem="O4n-8e-Kz5" secondAttribute="trailing" id="zIr-8a-bgQ"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="BlockNumberLabel" destination="cnQ-rL-Gaf" id="WLr-cW-EX1"/>
+                        <outlet property="colView" destination="pA2-9t-7HD" id="12c-4C-YY6"/>
                         <outlet property="scnView" destination="hka-5P-RiZ" id="a6Q-hP-SeJ"/>
                     </connections>
                 </viewController>
