@@ -47,6 +47,8 @@ class PositionCalculator: NSObject {
             block.yOri = 0
             block.located = true
             setBase = true
+            /*first = block
+            blocks[(first?.blockNumber)!] = first*/
             recursivelyLocateConnections(block: block)
         } else {
             let sides = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
@@ -173,12 +175,17 @@ class PositionCalculator: NSObject {
             let x = (block.value(forKey: side) as! String)
             if  x != "" {
                 let info = x.components(separatedBy: "-")
-                let connected = blocks[info[0]]!
-                let thisSide = getSideNum(side: side)
-                let thatSide = Int(info[1])!
-                if connected.located == false {
-                    locate(block: connected, relativeTo: block, a: thatSide, b: thisSide)
-                    connections.append(connected)
+                if let connected = blocks[info[0]] {
+                    let thisSide = getSideNum(side: side)
+                    let thatSide = Int(info[1])!
+                    if connected.located == false {
+                        locate(block: connected, relativeTo: block, a: thatSide, b: thisSide)
+                        connections.append(connected)
+                    }
+                } else {
+                    print("Didn't find cube this was connected to")
+                    block.setValue("", forKey: side)
+                    continue
                 }
             }
         }
