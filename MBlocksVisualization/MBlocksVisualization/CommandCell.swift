@@ -17,6 +17,8 @@ class CommandCell: UICollectionViewCell {
     @IBAction func sendCommand(_ sender: AnyObject) {
         delegate.sendCommand((sender.titleLabel??.text)!)
         print(sender.titleLabel??.text)
+        print(sender.frame.height)
+        print(sender.frame.width)
     }
     
 }

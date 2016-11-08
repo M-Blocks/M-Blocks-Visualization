@@ -95,11 +95,13 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 let extras = ["lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
                 
                 for e in extras {
-                    if (jsonElement[e] as? String) != nil {
+                    // MAJOR FIX NEEDED JUST UNCOMMENT CODE
+                    /*if (jsonElement[e] as? String) != nil {
                         block.setValue(Int(jsonElement[e] as! String), forKey: e)
                     } else {
                         block.setValue(64, forKey: e)
-                    }
+                    }*/
+                    block.setValue(64, forKey: e)
                 }
                 
             }

@@ -190,7 +190,29 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     }
     
     func sendCommand(_ command: String) {
-        print("Block \(blockModels[firstTouch]) should \(command)")
+        if blockModels[firstTouch] != nil {
+            let b = blockModels[firstTouch]!
+            print("Sending a request for Block \(b.blockNumber!)  to \(command)")
+            let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
+            let urlWithParams = scriptUrl + "?blockNumber=\(b.blockNumber!)&xPos=\(b.xPos)&yPos=\(b.yPos)&zPos=\(b.zPos)&command=\(command)"
+            print(urlWithParams)
+            
+            let myUrl = URL(string: urlWithParams);
+            let task = URLSession.shared.dataTask(with: myUrl!) { data, response, error in
+                guard error == nil else {
+                    //print(error)
+                    return
+                }
+                guard data != nil else {
+                    print("Data is empty")
+                    return
+                }
+            }
+            b.highlight(false)
+            firstTouch = ""
+            task.resume()
+            
+        }
     }
     
     // Sends commands to datbase
@@ -198,7 +220,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         print("Sending a request to move block \(block.blockNumber) to \(pos)")
         
         let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
-        let urlWithParams = scriptUrl + "?blockNumber=\(block.blockNumber!)&xPos=\(pos[0])&yPos=\(pos[1])&zPos=\(pos[2])&color=\(block.color)"
+        let urlWithParams = scriptUrl + "?blockNumber=\(block.blockNumber!)&xPos=\(pos[0])&yPos=\(pos[1])&zPos=\(pos[2])&command=\(block.color)"
         print(urlWithParams)
         
         let myUrl = URL(string: urlWithParams);
@@ -453,11 +475,12 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "commandCell", for: indexPath) as! CommandCell
         cell.commandButton.setTitle(commands[indexPath.item], for: UIControlState.normal)
+        cell.commandButton.setBackgroundImage(UIImage(named: "selected.png"), for: UIControlState.highlighted)
         cell.delegate = self
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemsPerRow:CGFloat = 6
+        let itemsPerRow:CGFloat = 8
         let hardCodedPadding:CGFloat = 5
         let itemWidth = (collectionView.bounds.width / itemsPerRow) - hardCodedPadding
         let itemHeight = collectionView.bounds.height - (2 * hardCodedPadding)

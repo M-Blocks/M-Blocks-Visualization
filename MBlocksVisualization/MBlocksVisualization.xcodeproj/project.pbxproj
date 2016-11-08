@@ -23,6 +23,8 @@
 		3C5C5DC71D9C46CC00BDEA93 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C5C5DC61D9C46CC00BDEA93 /* MapKit.framework */; };
 		3C70DA9E1DCA6CAF006F8896 /* MBlocksTitleLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C70DA9D1DCA6CAF006F8896 /* MBlocksTitleLogo.png */; };
 		3C70DAA01DCA6E25006F8896 /* startbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C70DA9F1DCA6E25006F8896 /* startbutton.png */; };
+		3C8EAD981DD269C100FB03D4 /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C8EAD971DD269C100FB03D4 /* selected.png */; };
+		3C8EAD9A1DD269C800FB03D4 /* unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C8EAD991DD269C800FB03D4 /* unselected.png */; };
 		3CB61DBA1D9C5107003DD550 /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CB61DB91D9C5107003DD550 /* blocks.png */; };
 		3CCA921E1DB97A2E00F680D4 /* PositionCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */; };
 		3CF82F7E1DB0103F00D38B2F /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF82F7D1DB0103F00D38B2F /* Numbers.swift */; };
@@ -69,6 +71,8 @@
 		3C5C5DC61D9C46CC00BDEA93 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		3C70DA9D1DCA6CAF006F8896 /* MBlocksTitleLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBlocksTitleLogo.png; sourceTree = "<group>"; };
 		3C70DA9F1DCA6E25006F8896 /* startbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = startbutton.png; sourceTree = "<group>"; };
+		3C8EAD971DD269C100FB03D4 /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selected.png; sourceTree = "<group>"; };
+		3C8EAD991DD269C800FB03D4 /* unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unselected.png; sourceTree = "<group>"; };
 		3CB61DB91D9C5107003DD550 /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blocks.png; sourceTree = "<group>"; };
 		3CCA921D1DB97A2E00F680D4 /* PositionCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionCalculator.swift; sourceTree = "<group>"; };
 		3CF82F7D1DB0103F00D38B2F /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
@@ -166,6 +170,8 @@
 			children = (
 				3C70DA9D1DCA6CAF006F8896 /* MBlocksTitleLogo.png */,
 				3CB61DB91D9C5107003DD550 /* blocks.png */,
+				3C8EAD971DD269C100FB03D4 /* selected.png */,
+				3C8EAD991DD269C800FB03D4 /* unselected.png */,
 				3C30B1B21D9327C90005C2B7 /* Background_Diffuse.png */,
 				3C30B1B31D9327C90005C2B7 /* MBlocksLogo.png */,
 				3C70DA9F1DCA6E25006F8896 /* startbutton.png */,
@@ -300,8 +306,10 @@
 				3C30B1B51D9327C90005C2B7 /* MBlocksLogo.png in Resources */,
 				3C70DAA01DCA6E25006F8896 /* startbutton.png in Resources */,
 				3C30B1B41D9327C90005C2B7 /* Background_Diffuse.png in Resources */,
+				3C8EAD981DD269C100FB03D4 /* selected.png in Resources */,
 				3CB61DBA1D9C5107003DD550 /* blocks.png in Resources */,
 				3C70DA9E1DCA6CAF006F8896 /* MBlocksTitleLogo.png in Resources */,
+				3C8EAD9A1DD269C800FB03D4 /* unselected.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
