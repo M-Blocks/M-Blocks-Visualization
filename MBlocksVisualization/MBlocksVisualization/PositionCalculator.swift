@@ -64,7 +64,7 @@ class PositionCalculator: NSObject {
                     if let connected = blocks[info[0]] {
                         let thisSide = getSideNum(side: side)
                         let thatSide = Int(info[1])!
-                        if (thatSide == connected.faceDown()) || (thatSide == connected.upFace) {
+                        if (thatSide == connected.downFace()) || (thatSide == connected.upFace) {
                             print("setting as guess")
                             guessAvailable = true
                             guessList["rel"] = connected
@@ -103,56 +103,31 @@ class PositionCalculator: NSObject {
         block.yPos = relativeTo.yPos
         block.zPos = relativeTo.zPos
         
-        if (b != relativeTo.upFace) && (b != relativeTo.faceDown()) {
-            //print("b is \(b)")
-            //print("a is \(a)")
-            // FIX MIGHT BE FLIPPED
-            //print(block.relativeSideFaces())
-            //print(relativeTo.relativeSideFaces())
+        if (b != relativeTo.upFace) && (b != relativeTo.downFace()) {
             let firstIndex = block.relativeSideFaces().index(of: a)
             let secondIndex = relativeTo.relativeSideFaces().index(of: b)
-            //print(firstIndex)
-            //print(secondIndex)
             
             let turn = rotations[firstIndex! + 1]?[secondIndex!].degreesToRadians
-            /*print(rotations[firstIndex!]?[secondIndex!])
-            print("first index \(firstIndex!)")
-            print("second index \(secondIndex!)")
-            print("turn is \(turn)")*/
             block.yOri = (relativeTo.yOri + turn!) - (((relativeTo.yOri + turn!) / 360.degreesToRadians)*360.degreesToRadians)
-
         }
         
-        
         let facing = relativeTo.getDirFacing(side: b)
-        /*print("DEBUG")
-        print("Block Nubmer: \(relativeTo.blockNumber!)")
-        print("Side: \(b)")
-        print("Facing: \(facing)")
-        print("END DEBUG")
-        */
         
         if facing == "posX" {
             block.xPos = block.xPos + 1.0
-            //block.turnToFace(side: a, dir: "negX")
         } else if facing == "negX" {
             block.xPos = block.xPos - 1.0
-            //block.turnToFace(side: a, dir: "posX")
         } else if facing == "posY" {
             block.yPos = block.yPos + 1.0
-            //block.turnToFace(side: a, dir: "negY")
         } else if facing == "negY" {
             block.yPos = block.yPos - 1.0
-            //block.turnToFace(side: a, dir: "posY")
         } else if facing == "posZ" {
             block.zPos = block.zPos + 1.0
-            //block.turnToFace(side: a, dir: "negZ")
         } else if facing == "negZ" {
             block.zPos = block.zPos - 1.0
-            //block.turnToFace(side: a, dir: "posZ")
         }
         
-        if (b != relativeTo.upFace) && (b != relativeTo.faceDown()) {
+        if (b != relativeTo.upFace) && (b != relativeTo.downFace()) {
             block.located = true
             print("Block \(block.blockNumber) located and oriented")
         } else {
@@ -160,11 +135,6 @@ class PositionCalculator: NSObject {
         }
     }
     
-    
-    /*
-     *
-     *
-     */
     func recursivelyLocateConnections(block: BlockModel) {
         
         var connections = [BlockModel]()
@@ -208,7 +178,7 @@ class PositionCalculator: NSObject {
             return 4
         } else if side == "cFive" {
             return 5
-        } else { //side == "cSix" {
+        } else {
             return 6
         }
     }
@@ -223,7 +193,7 @@ class PositionCalculator: NSObject {
             return "cFour"
         } else if side == 5 {
             return "cFive"
-        } else { //side == "cSix" {
+        } else {
             return "cSix"
         }
     }

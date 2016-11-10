@@ -12,7 +12,6 @@ import SceneKit
 class BlockModel: NSObject {
     
     //properties
-    
     var blockNumber: String?
     var xPos: Double = 0.0
     var yPos: Double = 0.0
@@ -36,14 +35,12 @@ class BlockModel: NSObject {
     var lSix: Int = 0
     var located = false
     var highlighted = false
-    
     var sceneNode: SCNNode?
     
     override init() {
-        
     }
-    // fix
-    //construct with all parameters
+    
+    // fix: construct with all parameters
     init(blockNumber: String, upFace: Int, cOne: String, cTwo: String, cThree: String, cFour: String, cFive: String, cSix: String, lOne: String, lTwo: String, lThree: String, lFour: String, lFive: String, lSix: String, color: String) {
         self.blockNumber = blockNumber
         self.upFace = upFace
@@ -70,14 +67,12 @@ class BlockModel: NSObject {
         return SCNNode()
     }
     
-    
     //prints object's current state
     override var description: String {
         //return String(describing: cubeNumber)
         return "Cube Number: \(self.blockNumber!), x: \(self.xPos), y: \(self.yPos), z: \(self.zPos)"
     }
     
-    // FIX THE NUMBERS
     func setXZOri() {
         resetOri()
         if self.upFace == 1 {
@@ -89,10 +84,10 @@ class BlockModel: NSObject {
         } else if self.upFace == 4 {
             self.zOri = 270.degreesToRadians
         } else if self.upFace == 5 {
+            //Already good
         } else if self.upFace == 6 {
             self.xOri = 180.degreesToRadians
         }
-        
         if sceneNode != nil {
             sceneNode?.eulerAngles = SCNVector3(x: Float(self.xOri), y: Float(self.yOri), z: Float(self.zOri))
         }
@@ -107,7 +102,7 @@ class BlockModel: NSObject {
     func getDirFacing(side: Int) -> String {
         if side == upFace {
             return "posY"
-        } else if side == faceDown() {
+        } else if side == downFace() {
             return "negY"
         } else {
             let x = (relativeSideFaces().index(of: side)! * 90 + Int(yOri.radiansToDegrees)) % 360
@@ -123,28 +118,7 @@ class BlockModel: NSObject {
         }
     }
     
-    /* PROB NOT USEFUL -> DELETE */
-    func turnToFace(side: Int, dir: String) {
-        if side == 1 {
-            if upFace == 2 {
-                if dir == "posX" {
-                    self.xOri = 0
-                    self.yOri = 180.degreesToRadians
-                    self.zOri = 90.degreesToRadians
-                } else if dir == "negX" {
-                    
-                } else if dir == "posZ" {
-                    
-                } else if dir == "negZ" {
-                    
-                }
-            }
-            
-        }
-        
-    }
-    
-    func faceDown() -> Int {
+    func downFace() -> Int {
         if upFace == 1 {
             return 3
         } else if upFace == 2 {
@@ -178,24 +152,33 @@ class BlockModel: NSObject {
     
     func highlight(_ light: Bool = true) {
         let mat = self.sceneNode?.geometry!.materials
-        if light {
-            self.highlighted = true
-            
-            mat?[0].diffuse.contents = UIColor(hue: 0.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
-            mat?[1].diffuse.contents = UIColor(hue: 0.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
-            mat?[2].diffuse.contents = UIColor(hue: 0.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
-            mat?[3].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
-            mat?[4].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
-            mat?[5].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: 128.0, alpha: 1.0)
-        } else {
-            self.highlighted = false
-            
-            mat?[0].diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(self.lOne)/Float(128.0)), alpha: 1.0)
-            mat?[1].diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(self.lTwo)/Float(128.0)), alpha: 1.0)
-            mat?[2].diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(self.lThree)/Float(128.0)), alpha: 1.0)
-            mat?[3].diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(self.lFour)/Float(128.0)), alpha: 1.0)
-            mat?[4].diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(self.lFive)/Float(128.0)), alpha: 1.0)
-            mat?[5].diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(self.lSix)/Float(128.0)), alpha: 1.0)
+        
+        // FIX SET HUE AND SATURATION BEFORE THE FOR LOOP
+        self.highlighted = light
+        let hue = 0.5
+        let sat = 0.7
+        let lights = [self.lOne, self.lTwo,self.lThree, self.lFour, self.lFive, self.lSix]
+        for i in 0..<10 {
+            let b = (light == true) ? 128.0 : CGFloat(Float(lights[i])/Float(128.0))
+            mat?[i].diffuse.contents = UIColor(hue: CGFloat(hue), saturation: CGFloat(sat), brightness: b, alpha: 1.0)
+        }
+    }
+    
+    func getNeighboringPos(side: Int) -> [Double] {
+        let s = self.getDirFacing(side: side)
+        print(s)
+        if s == "posY" {
+            return [xPos, yPos + 1.0, zPos]
+        } else if s == "negY" {
+            return [xPos, yPos - 1.0, zPos]
+        } else if s == "negX" {
+            return [xPos - 1.0, yPos, zPos]
+        } else if s == "posX" {
+            return [xPos + 1.0, yPos, zPos]
+        } else if s == "posZ" {
+            return [xPos, yPos, zPos + 1.0]
+        } else { //"negZ"
+            return [xPos, yPos, zPos - 1.0]
         }
     }
     

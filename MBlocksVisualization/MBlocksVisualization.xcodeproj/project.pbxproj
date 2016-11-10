@@ -13,7 +13,6 @@
 		3C30B1951D9327840005C2B7 /* MBlocksVisualizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1941D9327840005C2B7 /* MBlocksVisualizationTests.swift */; };
 		3C30B1A01D9327840005C2B7 /* MBlocksVisualizationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B19F1D9327840005C2B7 /* MBlocksVisualizationUITests.swift */; };
 		3C30B1AE1D9327A40005C2B7 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1AD1D9327A40005C2B7 /* StartScreen.swift */; };
-		3C30B1B01D9327B20005C2B7 /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1AF1D9327B20005C2B7 /* MainScreen.swift */; };
 		3C30B1B41D9327C90005C2B7 /* Background_Diffuse.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C30B1B21D9327C90005C2B7 /* Background_Diffuse.png */; };
 		3C30B1B51D9327C90005C2B7 /* MBlocksLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C30B1B31D9327C90005C2B7 /* MBlocksLogo.png */; };
 		3C30B1B71D9327D70005C2B7 /* ViewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */; };
@@ -61,7 +60,6 @@
 		3C30B19F1D9327840005C2B7 /* MBlocksVisualizationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBlocksVisualizationUITests.swift; sourceTree = "<group>"; };
 		3C30B1A11D9327840005C2B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3C30B1AD1D9327A40005C2B7 /* StartScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
-		3C30B1AF1D9327B20005C2B7 /* MainScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
 		3C30B1B21D9327C90005C2B7 /* Background_Diffuse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Background_Diffuse.png; sourceTree = "<group>"; };
 		3C30B1B31D9327C90005C2B7 /* MBlocksLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBlocksLogo.png; sourceTree = "<group>"; };
 		3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewScreen.swift; sourceTree = "<group>"; };
@@ -132,7 +130,6 @@
 				3C30B1AD1D9327A40005C2B7 /* StartScreen.swift */,
 				3C30B17F1D9327830005C2B7 /* AppDelegate.swift */,
 				3C30B1BE1D9334670005C2B7 /* Main.storyboard */,
-				3C30B1AF1D9327B20005C2B7 /* MainScreen.swift */,
 				3C30B1861D9327830005C2B7 /* Assets.xcassets */,
 				3C30B1B11D9327C90005C2B7 /* Resources */,
 				3C30B1B61D9327D70005C2B7 /* ViewScreen.swift */,
@@ -334,7 +331,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C30B1B01D9327B20005C2B7 /* MainScreen.swift in Sources */,
 				3CFF6FCB1DCD2F85004AD132 /* CommandCell.swift in Sources */,
 				3C30B1B71D9327D70005C2B7 /* ViewScreen.swift in Sources */,
 				3C30B1BB1D9327E60005C2B7 /* HomeModel.swift in Sources */,

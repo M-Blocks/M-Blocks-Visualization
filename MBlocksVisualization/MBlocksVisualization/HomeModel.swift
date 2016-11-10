@@ -24,22 +24,17 @@ class HomeModel: NSObject, URLSessionDataDelegate {
     
     
     func downloadItems() {
-        
         let url: URL = URL(string: urlPath)!
         var session: Foundation.URLSession!
         let configuration = URLSessionConfiguration.default
-        
         session = Foundation.URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
-        
         let task = session.dataTask(with: url)
-        
         task.resume()
         
     }
     
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         self.data.append(data);
-        
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -56,12 +51,11 @@ class HomeModel: NSObject, URLSessionDataDelegate {
         
         var jsonResult: Any
         var newJSONResult: NSArray = NSArray()
-        do{
+        do {
             jsonResult = try JSONSerialization.jsonObject(with: self.data as Data, options:JSONSerialization.ReadingOptions.allowFragments)//as! NSMutableArray
             newJSONResult = jsonResult as! NSArray
         } catch let error as NSError {
             print(error)
-            
         }
         
         var jsonElement: NSDictionary = NSDictionary()
@@ -95,13 +89,12 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 let extras = ["lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
                 
                 for e in extras {
-                    // MAJOR FIX NEEDED JUST UNCOMMENT CODE
-                    /*if (jsonElement[e] as? String) != nil {
-                        block.setValue(Int(jsonElement[e] as! String), forKey: e)
+                    if (jsonElement[e] as? String) != nil {
+                        let l = (Int(jsonElement[e] as! String) == 0) ? 64 : Int(jsonElement[e] as! String)
+                        block.setValue(l, forKey: e)
                     } else {
                         block.setValue(64, forKey: e)
-                    }*/
-                    block.setValue(64, forKey: e)
+                    }
                 }
                 
             }
@@ -110,9 +103,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
         }
         
         DispatchQueue.main.async(execute: { () -> Void in
-            
             self.delegate.itemsDownloaded(blocks)
-            
         })
     }
 }
