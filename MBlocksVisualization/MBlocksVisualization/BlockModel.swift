@@ -34,6 +34,7 @@ class BlockModel: NSObject {
     var lFive: Int = 0
     var lSix: Int = 0
     var located = false
+    var oriented = false
     var highlighted = false
     var sceneNode: SCNNode?
     
@@ -75,7 +76,9 @@ class BlockModel: NSObject {
     
     func setXZOri() {
         resetOri()
-        if self.upFace == 1 {
+        if self.upFace == -1 {
+            // do nothing because we don't know what side is up
+        } else if self.upFace == 1 {
             self.xOri = 270.degreesToRadians
         } else if self.upFace == 2 {
             self.zOri = 90.degreesToRadians
@@ -153,14 +156,11 @@ class BlockModel: NSObject {
     func highlight(_ light: Bool = true) {
         let mat = self.sceneNode?.geometry!.materials
         
-        // FIX SET HUE AND SATURATION BEFORE THE FOR LOOP
         self.highlighted = light
-        let hue = 0.5
-        let sat = 0.7
         let lights = [self.lOne, self.lTwo,self.lThree, self.lFour, self.lFive, self.lSix]
-        for i in 0..<10 {
+        for i in 0..<5 {
             let b = (light == true) ? 128.0 : CGFloat(Float(lights[i])/Float(128.0))
-            mat?[i].diffuse.contents = UIColor(hue: CGFloat(hue), saturation: CGFloat(sat), brightness: b, alpha: 1.0)
+            mat?[i].diffuse.contents = UIColor(hue: getHue(), saturation: 1.0, brightness: b, alpha: 1.0)
         }
     }
     
@@ -182,5 +182,14 @@ class BlockModel: NSObject {
         }
     }
     
+    func getHue() -> CGFloat {
+        if color == "red" {
+            return CGFloat(0.0)
+        } else if color == "green" {
+            return CGFloat(0.35)
+        } else { // color == "blue"
+            return CGFloat(0.66)
+        }
+    }
     
 }

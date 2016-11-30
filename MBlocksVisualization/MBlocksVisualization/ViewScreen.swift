@@ -129,14 +129,6 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         geometry = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.1)
         
         var color = UIColor.orange
-        var hue = CGFloat(0.0) // FIX: ACTUALLY USE HUE
-        if block.color == "green" {
-            color = UIColor.green
-            hue = CGFloat(0.4)
-        } else {
-            color = UIColor.red
-            hue = CGFloat(1.0)
-        }
         geometry.materials.first?.diffuse.contents = color
         
         let geometryNode = SCNNode(geometry: geometry)
@@ -144,22 +136,22 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         geometryNode.name = block.blockNumber
         
         let sideOne = SCNMaterial()
-        sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 0.7, brightness: CGFloat(Float(block.lOne)/Float(128.0)), alpha: 1.0)
+        sideOne.diffuse.contents = UIColor(hue: 0.1, saturation: 1.0, brightness: CGFloat(Float(block.lOne)/Float(128.0)), alpha: 1.0)
         sideOne.name = "sideOne"
         let sideTwo = SCNMaterial()
-        sideTwo.diffuse.contents = UIColor(hue: 0.3, saturation: 0.7, brightness: CGFloat(Float(block.lTwo)/Float(128.0)), alpha: 1.0)
+        sideTwo.diffuse.contents = UIColor(hue: 0.3, saturation: 1.0, brightness: CGFloat(Float(block.lTwo)/Float(128.0)), alpha: 1.0)
         sideTwo.name = "sideTwo"
         let sideThree = SCNMaterial()
-        sideThree.diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(block.lThree)/Float(128.0)), alpha: 1.0)
+        sideThree.diffuse.contents = UIColor(hue: 0.5, saturation: 1.0, brightness: CGFloat(Float(block.lThree)/Float(128.0)), alpha: 1.0)
         sideThree.name = "sideThree"
         let sideFour = SCNMaterial()
-        sideFour.diffuse.contents = UIColor(hue: 0.7, saturation: 0.7, brightness: CGFloat(Float(block.lFour)/Float(128.0)), alpha: 1.0)
+        sideFour.diffuse.contents = UIColor(hue: 0.7, saturation: 1.0, brightness: CGFloat(Float(block.lFour)/Float(128.0)), alpha: 1.0)
         sideFour.name = "sidefour"
         let sideFive = SCNMaterial()
-        sideFive.diffuse.contents = UIColor(hue: 0.85, saturation: 0.7, brightness: CGFloat(Float(block.lFive)/Float(128.0)), alpha: 1.0)
+        sideFive.diffuse.contents = UIColor(hue: 0.85, saturation: 1.0, brightness: CGFloat(Float(block.lFive)/Float(128.0)), alpha: 1.0)
         sideFive.name = "sideFive"
         let sideSix = SCNMaterial()
-        sideSix.diffuse.contents = UIColor(hue: 1.0, saturation: 0.7, brightness: CGFloat(Float(block.lSix)/Float(128.0)), alpha: 1.0)
+        sideSix.diffuse.contents = UIColor(hue: 1.0, saturation: 1.0, brightness: CGFloat(Float(block.lSix)/Float(128.0)), alpha: 1.0)
         sideSix.name = "sideSix"
         geometry.materials = [sideOne, sideTwo, sideThree, sideFour, sideFive, sideSix]
         
@@ -177,7 +169,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         let ints = ["upFace", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         for v in strs {
             if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
-                print("\(v) is outdated. Translation/Rotation needed. ")
+                print("\(v) is outdated (for cube \(old.blockNumber)). Translation/Rotation needed. ")
                 return true
             }
         }
@@ -189,7 +181,6 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         }
         return false
     }
-    // FIX, MAKE SURE TO UPDATE SIDE LIGHTING
     func updateBlock(old: BlockModel, new: BlockModel) {
         let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         for v in variables {
@@ -201,16 +192,13 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         
         let mat = old.sceneNode?.geometry!.materials
         let lights = [old.lOne, old.lTwo, old.lThree, old.lFour, old.lFive, old.lSix]
-        // FIX, SET HUE AND SATURATION AND USE IT
-        var hue = CGFloat(0.0)
-        if old.color == "green" {
-            hue = CGFloat(0.4)
-        } else {
-            hue = CGFloat(1.0)
-        }
         for i in 0..<5 {
-            mat?[i].diffuse.contents = UIColor(hue: 0.5, saturation: 0.7, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
+            let v = Double(i)/10.0
+            mat?[i].diffuse.contents = UIColor(hue: CGFloat(v), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
         }
+        /*for i in 0..<5 {
+            mat?[i].diffuse.contents = UIColor(hue: old.getHue(), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
+        }*/
         old.sceneNode?.position = SCNVector3(x: Float(old.xPos), y: Float(old.yPos), z: Float(old.zPos))
         old.sceneNode?.eulerAngles = SCNVector3(x: Float(old.xOri), y: Float(old.yOri), z: Float(old.zOri))
         print(old.sceneNode?.position as Any)
@@ -283,7 +271,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     // Handles what happens when a block is touched
     func handleTouchFor(node: SCNNode, sideName: String) {
         let box = blockModels[node.name!]!
-        print("You touched: Block \(box.blockNumber!)(\(box.xPos),\(box.yPos),\(box.zPos)) on side \(sideName)")
+        print("You touched: Block \(box.blockNumber!)(\(box.xPos),\(box.yPos),\(box.zPos))[\(box.xOri.radiansToDegrees),\(box.yOri.radiansToDegrees),\(box.zOri.radiansToDegrees)] on side \(sideName)")
         print("Fully positioned: \(box.located)")
         
         if firstTouch == "" {
@@ -305,6 +293,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
                 }
             }
         }
+        
     }
     // Finds out what block is touched and calls the function that deals with it
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -326,7 +315,8 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "commandCell", for: indexPath) as! CommandCell
         cell.commandButton.setTitle(commands[indexPath.item], for: UIControlState.normal)
-        cell.commandButton.setBackgroundImage(UIImage(named: "selected.png"), for: UIControlState.highlighted)
+        //cell.commandButton.setBackgroundImage(UIImage(named: "selected.png"), for: UIControlState.highlighted)
+        cell.commandButton.setTitleColor(UIColor.white, for: UIControlState.highlighted)
         cell.delegate = self
         return cell
     }
@@ -356,6 +346,25 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         if posCalc == nil {
             posCalc = PositionCalculator(list: items as! [BlockModel])
         }
+    }
+    // sends command for reset
+    func resetDatabase() {
+        print("Sending a request for reset")
+        let scriptUrl = "http://mitmblocks.com/reset.php"
+        let urlWithParams = scriptUrl
+        print(urlWithParams)
+        let myUrl = URL(string: urlWithParams);
+        let task = URLSession.shared.dataTask(with: myUrl!) { data, response, error in
+            guard error == nil else {
+                print(error as Any)
+                return
+            }
+            guard data != nil else {
+                print("Data is empty")
+                return
+            }
+        }
+        task.resume()
     }
     // Sends request to follow a certain command
     func sendCommand(_ command: String) {
@@ -418,6 +427,9 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         } else { //side == "cSix" {
             return 6
         }
+    }
+    @IBAction func clickResetButton(_ sender: Any) {
+        resetDatabase()
     }
 }
 

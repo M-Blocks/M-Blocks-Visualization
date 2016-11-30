@@ -40,26 +40,30 @@ class PositionCalculator: NSObject {
     
     func position(block: BlockModel) {
         if !setBase {
-            block.xPos = 0.0
-            block.yPos = 0.0
-            block.zPos = 0.0
-            block.setXZOri()
-            block.yOri = 0
-            block.located = true
-            setBase = true
-            /*first = block
-            blocks[(first?.blockNumber)!] = first*/
-            recursivelyLocateConnections(block: block)
+            if block.upFace == -1 {
+                print("There is no base and this block is not fit to be the base, keep searching for a base...")
+            } else {
+                block.xPos = 0.0
+                block.yPos = 0.0
+                block.zPos = 0.0
+                block.setXZOri()
+                block.yOri = 0
+                block.located = true
+                block.oriented = true
+                setBase = true
+                /*first = block
+                 blocks[(first?.blockNumber)!] = first*/
+                recursivelyLocateConnections(block: block)
+            }
         } else {
             let sides = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
             var guessAvailable = false
             var guessList = [String: Any]()
             for side in sides {
                 let x = (block.value(forKey: side) as! String)
-                if  x != "" {
-                    
+                if  (x != "") && (x != "0-0") {
                     let info = x.components(separatedBy: "-")
-                    print(info)
+                    //print(info)
                     // if this is null(because the cube was turned off), then the connection should be deleted
                     if let connected = blocks[info[0]] {
                         let thisSide = getSideNum(side: side)
@@ -72,25 +76,30 @@ class PositionCalculator: NSObject {
                             guessList["b"] = thatSide
                             continue
                         }
-                        if connected.located == true {
-                            locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
+                        if (connected.located == true)  && (connected.oriented == true) {
+                            if checkReciprocal(block: block.blockNumber!, side: side, connected: connected, connectedSide: info[1]) {
+                                locate(block: block, relativeTo: connected, a: thisSide, b: thatSide)
+                            }
                             //print("should immediately break")
                             break
                         } else {
-                            print("connected cube is not located")
-                            print(connected.located)
-                            print(blocks["7"]!.located)
+                            print("connected cube is either not located or not oriented")
+                            print("located: \(connected.located)")
+                            print("oriented: \(connected.oriented)")
                         }
                     } else {
                         print("Didn't find cube this was connected to")
-                        block.setValue("", forKey: side)
+                        //block.setValue("", forKey: side)
                         continue
                     }
                 }
                 //print("still looping")
                 if side == "cSix" {
                     if guessAvailable {
-                        locate(block: block, relativeTo: guessList["rel"] as! BlockModel, a: guessList["a"] as! Int, b: guessList["b"] as! Int)
+                        if checkReciprocal(block: block.blockNumber!, side: guessList["a"] as! String, connected: guessList["rel"] as! BlockModel, connectedSide: guessList["b"] as! String) {
+                            locate(block: block, relativeTo: guessList["rel"] as! BlockModel, a: guessList["a"] as! Int, b: guessList["b"] as! Int)
+                        }
+                        
                     }
                 }
             }
@@ -108,7 +117,12 @@ class PositionCalculator: NSObject {
             let secondIndex = relativeTo.relativeSideFaces().index(of: b)
             
             let turn = rotations[firstIndex! + 1]?[secondIndex!].degreesToRadians
-            block.yOri = (relativeTo.yOri + turn!) - (((relativeTo.yOri + turn!) / 360.degreesToRadians)*360.degreesToRadians)
+            // FIX THIS, DOES NOT SEEM RIGHT
+            //block.yOri = (relativeTo.yOri + turn!) - (((relativeTo.yOri + turn!) / 360.degreesToRadians)*360.degreesToRadians)
+            // new
+            let new = (relativeTo.yOri + turn!)
+            let over = (Int((relativeTo.yOri + turn!).radiansToDegrees) / 360) * 360
+            block.yOri = new - (over.degreesToRadians)
         }
         
         let facing = relativeTo.getDirFacing(side: b)
@@ -129,9 +143,12 @@ class PositionCalculator: NSObject {
         
         if (b != relativeTo.upFace) && (b != relativeTo.downFace()) {
             block.located = true
+            block.oriented = true
             print("Block \(block.blockNumber) located and oriented")
         } else {
             print("Block \(block.blockNumber) located but not oriented")
+            block.located = true
+            block.oriented = false
         }
     }
     
@@ -143,18 +160,21 @@ class PositionCalculator: NSObject {
         
         for side in sides {
             let x = (block.value(forKey: side) as! String)
-            if  x != "" {
+            if  (x != "") && (x != "0-0") {
                 let info = x.components(separatedBy: "-")
                 if let connected = blocks[info[0]] {
                     let thisSide = getSideNum(side: side)
                     let thatSide = Int(info[1])!
                     if connected.located == false {
-                        locate(block: connected, relativeTo: block, a: thatSide, b: thisSide)
+                        //locate(block: connected, relativeTo: block, a: thatSide, b: thisSide)
+                        if checkReciprocal(block: connected.blockNumber!, side: info[1], connected: block, connectedSide: "\(getSideNum(side: side))") {
+                            locate(block: connected, relativeTo: block, a: thatSide, b: thisSide)
+                        }
                         connections.append(connected)
                     }
                 } else {
                     print("Didn't find cube this was connected to")
-                    block.setValue("", forKey: side)
+                    //block.setValue("", forKey: side)
                     continue
                 }
             }
@@ -197,4 +217,25 @@ class PositionCalculator: NSObject {
             return "cSix"
         }
     }
+    
+    // 2's cOne says 29-3, 29's three should say 2-1
+    func checkReciprocal(block: String, side: String, connected: BlockModel, connectedSide: String) -> Bool {
+        //connected's connected side should say block-side'
+        print(connectedSide)
+        if (connected.value(forKey: getSideName(side: Int(connectedSide)!)) as! String) == (block + "-" + side) {
+            return true
+        }
+        return false
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
