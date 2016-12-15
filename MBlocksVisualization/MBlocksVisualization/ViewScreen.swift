@@ -20,12 +20,11 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     var blockModels: [String:BlockModel] = [:]
     var totalRenders = 0
     var baseInitiated: Bool = false
-    var posCalc: PositionCalculator?
     var firstTouch = ""
-    let commands = ["Green", "Blue", "Red", "Flip", "Traverse", "Climb", "Jump", "Spin", "360"]
+    let commands = ["Green", "Blue", "Red", "dance", "light", "climb", "sleep", "arrange"]
     
     // NETWORKING
-    var feedItems: NSArray = NSArray()
+    var feedItems: NSArray? = NSArray()
     var downloadRate = 2.0 //Hertz
     var lastTime: TimeInterval = 0
     var mainTimer = Timer()
@@ -40,6 +39,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         setupView()
         setupScene()
         setupCamera()
+        setupBase()
         colView.delegate = self
         colView.dataSource = self
         
@@ -91,22 +91,20 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         scnScene.rootNode.addChildNode(cameraNode)
     }
     func reRender() {
-        if !baseInitiated {
-            setupBase()
-        }
-        for item in feedItems {
-            let b = item as! BlockModel
-            let cubeNum = b.blockNumber!
-            let oldCube = blockModels[cubeNum]
-            if oldCube != nil {
-                if needsUpdate(old: oldCube!, new: b) {
-                    updateBlock(old: oldCube!, new: b)
+        if feedItems != nil {
+            for item in feedItems! {
+                let b = item as! BlockModel
+                let cubeNum = b.blockNumber!
+                let oldCube = blockModels[cubeNum]
+                if oldCube != nil {
+                    if needsUpdate(old: oldCube!, new: b) {
+                        updateBlock(old: oldCube!, new: b)
+                    }
+                } else {
+                    print("Add new cube")
+                    addBlock(block: b, blockNum: cubeNum)
                 }
-            } else {
-                print("Add new cube")
-                addBlock(block: b, blockNum: cubeNum)
             }
-            
         }
     }
     func setupBase() {
@@ -122,7 +120,6 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     }
     func addBlock(block: BlockModel, blockNum: String) {
         
-        posCalc?.position(block: block)
         blockModels.updateValue(block, forKey: blockNum)
         
         var geometry:SCNGeometry
@@ -165,14 +162,11 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     }
     // Determines if a block needs to be moved/rerendered (aka if its data has changed)
     func needsUpdate(old: BlockModel, new: BlockModel) -> Bool {
-        let strs = ["cOne", "cTwo", "cThree", "cFour", "cFive", "cSix"]
-        let ints = ["upFace", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
-        for v in strs {
-            if (old.value(forKey: v) as! String) != (new.value(forKey: v) as! String) {
-                print("\(v) is outdated (for cube \(old.blockNumber)). Translation/Rotation needed. ")
-                return true
-            }
-        }
+        let ints = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
+        /*if (old.value(forKey: "color") as! String) != (new.value(forKey: "color") as! String) {
+            print("Color is outdated (for cube \(old.blockNumber)). Update needed. ")
+            return true
+        }*/
         for v in ints {
             if (old.value(forKey: v) as! Int) != (new.value(forKey: v) as! Int) {
                 print("\(v) is outdated. Translation/Rotation/ReRendering needed.")
@@ -182,26 +176,22 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         return false
     }
     func updateBlock(old: BlockModel, new: BlockModel) {
-        let variables = ["upFace", "cOne", "cTwo", "cThree", "cFour", "cFive", "cSix", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
+        let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
         for v in variables {
             old.setValue(new.value(forKey: v), forKey: v)
         }
-        old.setXZOri()
-        old.located = false
-        posCalc?.position(block: old)
         
         let mat = old.sceneNode?.geometry!.materials
         let lights = [old.lOne, old.lTwo, old.lThree, old.lFour, old.lFive, old.lSix]
-        for i in 0..<5 {
+        for i in 0..<6 {
             let v = Double(i)/10.0
-            mat?[i].diffuse.contents = UIColor(hue: CGFloat(v), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
+            old.sceneNode?.geometry!.materials[i].diffuse.contents = UIColor(hue: old.getHue(), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
         }
         /*for i in 0..<5 {
             mat?[i].diffuse.contents = UIColor(hue: old.getHue(), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
         }*/
         old.sceneNode?.position = SCNVector3(x: Float(old.xPos), y: Float(old.yPos), z: Float(old.zPos))
         old.sceneNode?.eulerAngles = SCNVector3(x: Float(old.xOri), y: Float(old.yOri), z: Float(old.zOri))
-        print(old.sceneNode?.position as Any)
     }
     func checkCamera() {
         //let ang = scnView.pointOfView?.eulerAngles
@@ -254,7 +244,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
                 continue
             }
             var exists = false
-            for b in feedItems {
+            for b in feedItems! {
                 let bl = b as! BlockModel
                 if bl.blockNumber! == node.name! {
                     exists = true
@@ -272,7 +262,6 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     func handleTouchFor(node: SCNNode, sideName: String) {
         let box = blockModels[node.name!]!
         print("You touched: Block \(box.blockNumber!)(\(box.xPos),\(box.yPos),\(box.zPos))[\(box.xOri.radiansToDegrees),\(box.yOri.radiansToDegrees),\(box.zOri.radiansToDegrees)] on side \(sideName)")
-        print("Fully positioned: \(box.located)")
         
         if firstTouch == "" {
             firstTouch = box.blockNumber!
@@ -282,15 +271,11 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
                 firstTouch = ""
                 box.highlight(false)
             } else {
-                if box.located == true {
-                    let side = getSideNum(side: sideName)
-                    let first = blockModels[firstTouch]!
-                    sendMyRequest(first, pos: box.getNeighboringPos(side: side))
-                    first.highlight(false)
-                    firstTouch = ""
-                } else {
-                    print("Can't use this side because it's position isn't completely constrained")
-                }
+                let side = getSideNum(side: sideName)
+                let first = blockModels[firstTouch]!
+                sendMyRequest(first, pos: box.getNeighboringPos(side: side))
+                first.highlight(false)
+                firstTouch = ""
             }
         }
         
@@ -342,10 +327,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     // Updates app's list of blocks
     func itemsDownloaded(_ items: NSArray) {
         feedItems = items
-        BlockNumberLabel.text = "Blocks Avalaible: \(feedItems.count)"
-        if posCalc == nil {
-            posCalc = PositionCalculator(list: items as! [BlockModel])
-        }
+        BlockNumberLabel.text = "Blocks Avalaible: \(feedItems!.count)"
     }
     // sends command for reset
     func resetDatabase() {
@@ -365,11 +347,35 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
             }
         }
         task.resume()
+        
+        let scriptUrl2 = "http://mitmblocks.com/goals_database_editor.php"
+        let urlWithParams2 = scriptUrl2 + "?blockNumber=\(0)&xPos=\(0)&yPos=\(0)&zPos=\(0)&command=find_connections"
+        let myUrl2 = URL(string: urlWithParams2);
+        let task2 = URLSession.shared.dataTask(with: myUrl2!) { data, response, error in
+            guard error == nil else {
+                print(error as Any)
+                return
+            }
+            guard data != nil else {
+                print("Data is empty")
+                return
+            }
+        }
+        firstTouch = ""
+        task2.resume()
     }
     // Sends request to follow a certain command
     func sendCommand(_ command: String) {
         if blockModels[firstTouch] != nil {
             let b = blockModels[firstTouch]!
+            
+            let colors = ["green", "blue", "red"]
+            if colors.contains(command.lowercased()) {
+                b.color = command.lowercased()
+                print(b.color)
+                print("changing color")
+            }
+            
             print("Sending a request for Block \(b.blockNumber!)  to \(command)")
             let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
             let urlWithParams = scriptUrl + "?blockNumber=\(b.blockNumber!)&xPos=\(b.xPos)&yPos=\(b.yPos)&zPos=\(b.zPos)&command=\(command)"

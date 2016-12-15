@@ -20,7 +20,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
     
     var data : NSMutableData = NSMutableData()
     
-    let urlPath: String = "http://mitmblocks.com/new_service.php"
+    let urlPath: String = "http://mitmblocks.com/third_service.php"
     
     
     func downloadItems() {
@@ -60,31 +60,31 @@ class HomeModel: NSObject, URLSessionDataDelegate {
         
         var jsonElement: NSDictionary = NSDictionary()
         let blocks: NSMutableArray = NSMutableArray()
-        //print(newJSONResult)
         for thing in newJSONResult {
             jsonElement = thing as! NSDictionary
             
             let block = BlockModel()
             
             //the following insures none of the JsonElement values are nil through optional binding
-            if  let blockNumber = jsonElement["blockNumber"] as? String,
-                let upFace = Int((jsonElement["upFace"] as? String)!),
-                let cOne = jsonElement["cOne"] as? String,
-                let cTwo = jsonElement["cTwo"] as? String,
-                let cThree = jsonElement["cThree"] as? String,
-                let cFour = jsonElement["cFour"] as? String,
-                let cFive = jsonElement["cFive"] as? String,
-                let cSix = jsonElement["cSix"] as? String
+            if  let blockNumber = (jsonElement["blockNumber"] as? String),
+                let xPos = Int((jsonElement["xPos"] as? String)!),
+                let yPos = Int((jsonElement["yPos"] as? String)!),
+                let zPos = Int((jsonElement["zPos"] as? String)!),
+                let xOri = Int((jsonElement["xOri"] as? String)!),
+                let yOri = Int((jsonElement["yOri"] as? String)!),
+                let zOri = Int((jsonElement["zOri"] as? String)!),
+                let color = jsonElement["color"] as? String,
+                let upFace = Int((jsonElement["upFace"] as? String)!)
             {
                 block.blockNumber = blockNumber
+                block.color = color
+                block.xPos = Double(xPos)
+                block.yPos = Double(yPos)
+                block.zPos = Double(zPos)
+                block.xOri = Double(xOri).degreesToRadians
+                block.yOri = Double(yOri).degreesToRadians
+                block.zOri = Double(zOri).degreesToRadians
                 block.upFace = upFace
-                block.cOne = cOne
-                block.cTwo = cTwo
-                block.cThree = cThree
-                block.cFour = cFour
-                block.cFive = cFive
-                block.cSix = cSix
-                block.setXZOri()
                 
                 let extras = ["lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
                 

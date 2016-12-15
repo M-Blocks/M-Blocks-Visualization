@@ -13,28 +13,20 @@ class BlockModel: NSObject {
     
     //properties
     var blockNumber: String?
-    var xPos: Double = 0.0
+    var xPos: Double = 0.1
     var yPos: Double = 0.0
     var zPos: Double = 0.0
     var xOri: Double = 0.0
     var yOri: Double = 0.0
     var zOri: Double = 0.0
     var color: String = "green"
-    var upFace: Int = 1
-    var cOne: String?
-    var cTwo: String?
-    var cThree: String?
-    var cFour: String?
-    var cFive: String?
-    var cSix: String?
     var lOne: Int = 0
     var lTwo: Int = 0
     var lThree: Int = 0
     var lFour: Int = 0
     var lFive: Int = 0
     var lSix: Int = 0
-    var located = false
-    var oriented = false
+    var upFace: Int = 0
     var highlighted = false
     var sceneNode: SCNNode?
     
@@ -42,10 +34,9 @@ class BlockModel: NSObject {
     }
     
     // fix: construct with all parameters
-    init(blockNumber: String, upFace: Int, cOne: String, cTwo: String, cThree: String, cFour: String, cFive: String, cSix: String, lOne: String, lTwo: String, lThree: String, lFour: String, lFive: String, lSix: String, color: String) {
+    init(blockNumber: String, color: String, xPos: Int, yPos: Int, zPos: Int, xOri: Int, yOri : Int, zOri: Int, lOne: String, lTwo: String, lThree: String, lFour: String, lFive: String, lSix: String, upFace: Int) {
         self.blockNumber = blockNumber
         self.upFace = upFace
-        self.cOne = cOne
     }
     init(blockNumber: String, xPos: Double, yPos: Double, zPos: Double, xOri: Double, yOri: Double, zOri: Double, color: String) {
         self.blockNumber = blockNumber
@@ -71,35 +62,7 @@ class BlockModel: NSObject {
     //prints object's current state
     override var description: String {
         //return String(describing: cubeNumber)
-        return "Cube Number: \(self.blockNumber!), x: \(self.xPos), y: \(self.yPos), z: \(self.zPos)"
-    }
-    
-    func setXZOri() {
-        resetOri()
-        if self.upFace == -1 {
-            // do nothing because we don't know what side is up
-        } else if self.upFace == 1 {
-            self.xOri = 270.degreesToRadians
-        } else if self.upFace == 2 {
-            self.zOri = 90.degreesToRadians
-        } else if self.upFace == 3 {
-            self.xOri = 90.degreesToRadians
-        } else if self.upFace == 4 {
-            self.zOri = 270.degreesToRadians
-        } else if self.upFace == 5 {
-            //Already good
-        } else if self.upFace == 6 {
-            self.xOri = 180.degreesToRadians
-        }
-        if sceneNode != nil {
-            sceneNode?.eulerAngles = SCNVector3(x: Float(self.xOri), y: Float(self.yOri), z: Float(self.zOri))
-        }
-    }
-    
-    func resetOri() {
-        self.xOri = 0
-        self.yOri = 0
-        self.zOri = 0
+        return "Cube Number: \(self.blockNumber), x: \(self.xPos), y: \(self.yPos), z: \(self.zPos)"
     }
     
     func getDirFacing(side: Int) -> String {
@@ -158,9 +121,10 @@ class BlockModel: NSObject {
         
         self.highlighted = light
         let lights = [self.lOne, self.lTwo,self.lThree, self.lFour, self.lFive, self.lSix]
-        for i in 0..<5 {
-            let b = (light == true) ? 128.0 : CGFloat(Float(lights[i])/Float(128.0))
+        for i in 0..<6 {
+            let b = (light == true) ? 2.0 : CGFloat(Float(lights[i])/Float(128.0))
             mat?[i].diffuse.contents = UIColor(hue: getHue(), saturation: 1.0, brightness: b, alpha: 1.0)
+            print(i)
         }
     }
     
@@ -185,10 +149,13 @@ class BlockModel: NSObject {
     func getHue() -> CGFloat {
         if color == "red" {
             return CGFloat(0.0)
+            
         } else if color == "green" {
             return CGFloat(0.35)
+            
         } else { // color == "blue"
             return CGFloat(0.66)
+            
         }
     }
     
