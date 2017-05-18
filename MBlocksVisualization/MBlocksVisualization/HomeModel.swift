@@ -20,7 +20,7 @@ class HomeModel: NSObject, URLSessionDataDelegate {
     
     var data : NSMutableData = NSMutableData()
     
-    let urlPath: String = "http://mitmblocks.com/third_service.php"
+    let urlPath: String = "http://mitmblocks.com/clean_data.php"
     
     
     func downloadItems() {
@@ -66,18 +66,16 @@ class HomeModel: NSObject, URLSessionDataDelegate {
             let block = BlockModel()
             
             //the following insures none of the JsonElement values are nil through optional binding
-            if  let blockNumber = (jsonElement["blockNumber"] as? String),
+            if  let blockNumber = (jsonElement["blockNum"] as? String),
                 let xPos = Int((jsonElement["xPos"] as? String)!),
                 let yPos = Int((jsonElement["yPos"] as? String)!),
                 let zPos = Int((jsonElement["zPos"] as? String)!),
                 let xOri = Int((jsonElement["xOri"] as? String)!),
                 let yOri = Int((jsonElement["yOri"] as? String)!),
                 let zOri = Int((jsonElement["zOri"] as? String)!),
-                let color = jsonElement["color"] as? String,
                 let upFace = Int((jsonElement["upFace"] as? String)!)
             {
                 block.blockNumber = blockNumber
-                block.color = color
                 block.xPos = Double(xPos)
                 block.yPos = Double(yPos)
                 block.zPos = Double(zPos)
@@ -98,7 +96,6 @@ class HomeModel: NSObject, URLSessionDataDelegate {
                 }
                 
             }
-            
             blocks.add(block)
         }
         

@@ -22,13 +22,17 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     var baseInitiated: Bool = false
     var firstTouch = ""
     let commands = ["Green", "Blue", "Red", "dance", "light", "climb", "sleep", "arrange"]
+    var update = true
     
     // NETWORKING
     var feedItems: NSArray? = NSArray()
-    var downloadRate = 2.0 //Hertz
+    var downloadRate = 4.0 //Hertz
     var lastTime: TimeInterval = 0
     var mainTimer = Timer()
     var mainTimerSeconds = 0.0
+    var xOriBias: Float = 0.0;
+    var yOriBias: Float = 0.0;
+    var zOriBias: Float = 0.0;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,10 +98,10 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         if feedItems != nil {
             for item in feedItems! {
                 let b = item as! BlockModel
-                let cubeNum = b.blockNumber!
+                let cubeNum = b.blockNumber
                 let oldCube = blockModels[cubeNum]
-                if oldCube != nil {
-                    if needsUpdate(old: oldCube!, new: b) {
+                if (oldCube != nil) {
+                    if needsUpdate(old: oldCube!, new: b)  && (update == true) {
                         updateBlock(old: oldCube!, new: b)
                     }
                 } else {
@@ -155,14 +159,14 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         geometryNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
         
         geometryNode.position = SCNVector3(x: Float(block.xPos), y: Float(block.yPos), z: Float(block.zPos))
-        geometryNode.eulerAngles = SCNVector3(x: Float(block.xOri), y: Float(block.yOri), z: Float(block.zOri))
+        geometryNode.eulerAngles = SCNVector3(x: Float(block.xOri)+xOriBias.degreesToRadians, y: Float(block.yOri)+yOriBias.degreesToRadians, z: Float(block.zOri)+zOriBias.degreesToRadians)
         scnScene.rootNode.addChildNode(geometryNode)
         totalRenders = totalRenders+1
         block.setNode(node: geometryNode)
     }
     // Determines if a block needs to be moved/rerendered (aka if its data has changed)
     func needsUpdate(old: BlockModel, new: BlockModel) -> Bool {
-        let ints = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
+        let ints = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri"]
         /*if (old.value(forKey: "color") as! String) != (new.value(forKey: "color") as! String) {
             print("Color is outdated (for cube \(old.blockNumber)). Update needed. ")
             return true
@@ -176,20 +180,34 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         return false
     }
     func updateBlock(old: BlockModel, new: BlockModel) {
-        let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri", "lOne", "lTwo", "lThree", "lFour", "lFive", "lSix"]
-        for v in variables {
-            old.setValue(new.value(forKey: v), forKey: v)
+        
+        let newPosition: [Int] = [new.value(forKey:"xPos") as! Int,new.value(forKey:"yPos") as! Int,new.value(forKey:"zPos") as! Int]
+        let oldPosition: [Int] = [old.value(forKey:"xPos") as! Int,new.value(forKey:"yPos") as! Int,new.value(forKey:"zPos") as! Int]
+        var animate = false
+        if newPosition != oldPosition {
+            var diff = 0
+            if (newPosition[0] == oldPosition[0]+1) || (newPosition[0] == oldPosition[0]-1) {
+                diff += 1
+            } else if (newPosition[1] == oldPosition[1]+1) || (newPosition[1] == oldPosition[1]-1) {
+                diff += 1
+            } else if (newPosition[1] == oldPosition[1]+1) || (newPosition[1] == oldPosition[1]-1) {
+                diff += 1
+            }
+            
+            if diff < 3 {
+                animate = true
+            }
         }
         
-        let mat = old.sceneNode?.geometry!.materials
-        let lights = [old.lOne, old.lTwo, old.lThree, old.lFour, old.lFive, old.lSix]
-        for i in 0..<6 {
-            let v = Double(i)/10.0
-            old.sceneNode?.geometry!.materials[i].diffuse.contents = UIColor(hue: old.getHue(), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
+        if animate == true {
+            old.positionQueue.append(newPosition)
+        } else {
+            let variables = ["xPos", "yPos", "zPos", "xOri", "yOri", "zOri"]
+            for v in variables {
+                old.setValue(new.value(forKey: v), forKey: v)
+            }
         }
-        /*for i in 0..<5 {
-            mat?[i].diffuse.contents = UIColor(hue: old.getHue(), saturation: 1.0, brightness: CGFloat(Float(lights[i])/Float(128.0)), alpha: 1.0)
-        }*/
+        
         old.sceneNode?.position = SCNVector3(x: Float(old.xPos), y: Float(old.yPos), z: Float(old.zPos))
         old.sceneNode?.eulerAngles = SCNVector3(x: Float(old.xOri), y: Float(old.yOri), z: Float(old.zOri))
     }
@@ -246,7 +264,7 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
             var exists = false
             for b in feedItems! {
                 let bl = b as! BlockModel
-                if bl.blockNumber! == node.name! {
+                if bl.blockNumber == node.name! {
                     exists = true
                     break
                 }
@@ -261,13 +279,13 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     // Handles what happens when a block is touched
     func handleTouchFor(node: SCNNode, sideName: String) {
         let box = blockModels[node.name!]!
-        print("You touched: Block \(box.blockNumber!)(\(box.xPos),\(box.yPos),\(box.zPos))[\(box.xOri.radiansToDegrees),\(box.yOri.radiansToDegrees),\(box.zOri.radiansToDegrees)] on side \(sideName)")
+        print("You touched: Block \(box.blockNumber)(\(box.xPos),\(box.yPos),\(box.zPos))[\(box.xOri.radiansToDegrees),\(box.yOri.radiansToDegrees),\(box.zOri.radiansToDegrees)] on side \(sideName)")
         
         if firstTouch == "" {
-            firstTouch = box.blockNumber!
+            firstTouch = box.blockNumber
             box.highlight()
         } else {
-            if box.blockNumber! == firstTouch {
+            if box.blockNumber == firstTouch {
                 firstTouch = ""
                 box.highlight(false)
             } else {
@@ -348,8 +366,8 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
         }
         task.resume()
         
-        let scriptUrl2 = "http://mitmblocks.com/goals_database_editor.php"
-        let urlWithParams2 = scriptUrl2 + "?blockNumber=\(0)&xPos=\(0)&yPos=\(0)&zPos=\(0)&command=find_connections"
+        let scriptUrl2 = "http://mitmblocks.com/commands_editor.php"
+        let urlWithParams2 = scriptUrl2 + "?blockNum=\(0)&command=find_connections"
         let myUrl2 = URL(string: urlWithParams2);
         let task2 = URLSession.shared.dataTask(with: myUrl2!) { data, response, error in
             guard error == nil else {
@@ -376,9 +394,9 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
                 print("changing color")
             }
             
-            print("Sending a request for Block \(b.blockNumber!)  to \(command)")
-            let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
-            let urlWithParams = scriptUrl + "?blockNumber=\(b.blockNumber!)&xPos=\(b.xPos)&yPos=\(b.yPos)&zPos=\(b.zPos)&command=\(command)"
+            print("Sending a request for Block \(b.blockNumber)  to \(command)")
+            let scriptUrl = "http://mitmblocks.com/commands_editor.php"
+            let urlWithParams = scriptUrl + "?blockNum=\(b.blockNumber)&command=\(command)"
             print(urlWithParams)
             
             let myUrl = URL(string: urlWithParams);
@@ -401,8 +419,8 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     func sendMyRequest(_ block: BlockModel, pos: [Double]) {
         print("Sending a request to move block \(block.blockNumber) to \(pos)")
         
-        let scriptUrl = "http://mitmblocks.com/goals_database_editor.php"
-        let urlWithParams = scriptUrl + "?blockNumber=\(block.blockNumber!)&xPos=\(pos[0])&yPos=\(pos[1])&zPos=\(pos[2])&command=\(block.color)"
+        let scriptUrl = "http://mitmblocks.com/commands_editor.php"
+        let urlWithParams = scriptUrl + "?blockNum=\(block.blockNumber)&command=\(block.color)"
         print(urlWithParams)
         
         let myUrl = URL(string: urlWithParams);
@@ -437,6 +455,106 @@ class ViewScreen: UIViewController, HomeModelProtocal, UICollectionViewDataSourc
     @IBAction func clickResetButton(_ sender: Any) {
         resetDatabase()
     }
+    @IBAction func clickXButton(_ sender: Any) {
+        xOriBias += 1
+        if(xOriBias == 4) {
+            xOriBias = 0
+        }
+        for c in scnScene.rootNode.childNodes {
+            if (c.name != nil) { // has a name, is a cube, probably HAVE TO FIX THIS
+                var flip: Float = 1.0
+                if(Int(xOriBias) % 2 == 0) {
+                    flip = -1.0
+                }
+                print("//////")
+                print("old: \(c.position) and \(c.eulerAngles)")
+                //c.position = SCNVector3(x: c.position.x, y: c.position.z*flip, z: c.position.y)
+                /*c.eulerAngles = SCNVector3(x: Float(((Int(c.eulerAngles.x.radiansToDegrees) + 90)%360).degreesToRadians), y:c.eulerAngles.y, z: c.eulerAngles.z)
+                print("new: \(c.position) and \(c.eulerAngles)")
+                scnScene.rootNode.ch*/
+                
+                /*let animation = CABasicAnimation(keyPath: "transform.scale.x")
+                animation.isRemovedOnCompletion = false
+                animation.fillMode = kCAFillModeForwards
+                animation.fromValue = 1
+                animation.toValue = 2
+                c.addAnimation(animation, forKey: "");*/
+                
+                var spin = CABasicAnimation(keyPath: "rotation")
+                //spin.fromValue = NSValue(scnVector4: SCNVector4(x: 1, y: 0, z: 0, w: 0))
+                //spin.toValue = NSValue(scnVector4: SCNVector4(x: 1, y: 0, z: 0, w: Float(M_PI)))
+
+                //print(c.orientation)
+                //spin.fromValue = NSValue(scnVector4: c.orientation)
+                var xx = c.position.x
+                var yy = c.position.y
+                var zz = c.position.z
+                c.position = SCNVector3(xx+0, yy-0.5, zz+0.5)
+                c.pivot = SCNMatrix4MakeTranslation(0, -0.5, 0.5)
+                spin.byValue = NSValue(scnVector4: SCNVector4(x: 1, y: 0, z: 0, w: Float(M_PI/2)))
+                spin.duration = 1
+                spin.repeatCount = 0
+                spin.isRemovedOnCompletion = false
+                spin.fillMode = kCAFillModeForwards
+                c.addAnimation(spin, forKey: "spin around")
+                //c.rotation = SCNVector4(x: 1, y: 0, z: 0, w: Float(M_PI/2))
+                
+                
+                /*let pyramid = SCNPyramid(width: 1.0, height: 1.0, length: 1.0)
+                let pyramidNode = SCNNode(geometry: pyramid)
+                pyramidNode.position = SCNVector3(x: 0, y: 0, z: 0)
+                pyramidNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: Float(M_PI / 2))
+                scnScene.rootNode.addChildNode(pyramidNode)
+                
+                // But the animation seems to rotate aroun 2 axis and not just z
+                var spin = CABasicAnimation(keyPath: "rotation")
+                spin.byValue = NSValue(scnVector4: SCNVector4(x: 0, y: 0, z: 1, w: 2*Float(M_PI)))
+                spin.duration = 3
+                spin.repeatCount = 0
+                pyramidNode.addAnimation(spin, forKey: "spin around")*/
+                
+            }
+            
+        }
+    }
+    @IBAction func clickYButton(_ sender: Any) {
+        yOriBias += 1
+        if(yOriBias == 4) {
+            yOriBias = 0
+        }
+        for c in scnScene.rootNode.childNodes {
+            if (c.name != nil) { // has a name, is a cube, probably HAVE TO FIX THIS
+                var flip: Float = 1.0
+                if(Int(yOriBias) % 2 == 0) {
+                    flip = -1.0
+                }
+                c.position = SCNVector3(x: c.position.z, y: c.position.y, z: c.position.x*flip)
+                c.eulerAngles = SCNVector3(x: c.eulerAngles.x, y:c.eulerAngles.y + Float(90).degreesToRadians, z: c.eulerAngles.z)
+            }
+        }
+    }
+    @IBAction func clickZButton(_ sender: Any) {
+        zOriBias += 1
+        if(zOriBias == 4) {
+            zOriBias = 0
+        }
+        for c in scnScene.rootNode.childNodes {
+            if (c.name != nil) { // has a name, is a cube, probably HAVE TO FIX THIS
+                var flip: Float = 1.0
+                if(Int(zOriBias) % 2 == 0) {
+                    flip = -1.0
+                }
+                print("//////")
+                print("old: \(c.position) and \(c.eulerAngles)")
+                c.position = SCNVector3(x: c.position.y, y: c.position.x*flip, z: c.position.z)
+                c.eulerAngles = SCNVector3(x: c.eulerAngles.x, y:c.eulerAngles.y, z: c.eulerAngles.z + Float(90).degreesToRadians)
+                print("new: \(c.position) and \(c.eulerAngles)")
+            }
+        }
+    }
+    
+    
+    
 }
 
 extension ViewScreen: SCNSceneRendererDelegate {

@@ -12,8 +12,8 @@ import SceneKit
 class BlockModel: NSObject {
     
     //properties
-    var blockNumber: String?
-    var xPos: Double = 0.1
+    var blockNumber = "0";
+    var xPos: Double = 0.0
     var yPos: Double = 0.0
     var zPos: Double = 0.0
     var xOri: Double = 0.0
@@ -29,6 +29,7 @@ class BlockModel: NSObject {
     var upFace: Int = 0
     var highlighted = false
     var sceneNode: SCNNode?
+    var positionQueue : [[Int]] = []
     
     override init() {
     }
@@ -59,6 +60,56 @@ class BlockModel: NSObject {
         return SCNNode()
     }
     
+    func setPivot(direction1: String, direction2: String = "none") {
+        xPos += -pivot.x
+        yPos += -pivot.y
+        zPos += -pivot.z
+        pivot.x = 0
+        pivot.y = 0
+        pivot.z = 0
+        if (direction1 == "posX") || (direction2 == "posX") {
+            xPos += 0.5
+            pivot.x += 0.5
+        } else if (direction1 == "negX") || (direction2 == "negX") {
+            xPos -= 0.5
+            pivot.x -= 0.5
+        } else if (direction1 == "posY") || (direction2 == "posY") {
+            yPos += 0.5
+            pivot.y += 0.5
+        } else if (direction1 == "negY") || (direction2 == "negY") {
+            yPos -= 0.5
+            pivot.y -= 0.5
+        }  else if (direction1 == "posZ") || (direction2 == "posZ") {
+            zPos += 0.5
+            pivot.z += 0.5
+        } else if (direction1 == "negZ") || (direction2 == "negZ") {
+            zPos -= 0.5
+            pivot.z -= 0.5
+        }
+        
+        if (direction2 == "none") {
+            if (cube on pos X side) {
+                xPos += 0.5
+                pivot.x += 0.5
+            } else if (cube on neg X side) {
+                xPos -= 0.5
+                pivot.x -= 0.5
+            } else if (cube on pos Y side) {
+                yPos += 0.5
+                pivot.y += 0.5
+            } else if (cube on neg Y side) {
+                yPos -= 0.5
+                pivot.y -= 0.5
+            }  else if (cube on pos Z side) {
+                zPos += 0.5
+                pivot.z += 0.5
+            } else if (cube on neg Z side) {
+                zPos -= 0.5
+                pivot.z -= 0.5
+            }
+        }
+    }
+
     //prints object's current state
     override var description: String {
         //return String(describing: cubeNumber)
